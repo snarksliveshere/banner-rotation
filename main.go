@@ -49,18 +49,29 @@ func main() {
 		profit := float64(v.Reward) / float64(v.Trials)
 		rs := profit + math.Sqrt(math.Log(float64(banners.Count))/float64(v.Trials))
 		fmt.Println(rs, v.Id, int(rs*100))
-		p := Percentage{
-			id:    v.Id,
-			start: num,
+		var p Percentage
+		p.id = v.Id
+		l := len(percentage)
+		if l > 0 {
+			p.start = percentage[l-1].end + 1
+		} else {
+			p.start = num
 		}
-		num += int(rs * 100)
-		p.end = num
+		nn := int(rs * 100)
+		if l > 0 {
+			num += nn + 1
+			p.end = num
+		} else {
+			num += nn
+			p.end = num
+		}
+
 		percentage = append(percentage, p)
 
 	}
 	fmt.Printf("percentage: %#v\n", percentage)
 	rand.Seed(time.Now().UnixNano())
-	fmt.Println(num, rand.Intn(num))
+	fmt.Println(num, rand.Intn(num+1))
 
 }
 
