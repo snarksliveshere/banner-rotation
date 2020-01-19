@@ -25,6 +25,26 @@ type Percentage struct {
 }
 
 func main() {
+	mm := make(map[int]int, 3)
+	var id1, id2, id3 int
+	for i := 0; i < 1000; i++ {
+		id := getPerc()
+		if id == 1 {
+			id1++
+			mm[id] = id1
+		} else if id == 2 {
+			id2++
+			mm[id] = id2
+		} else {
+			id3++
+			mm[id] = id3
+		}
+
+	}
+	fmt.Printf("map: %#v", mm)
+}
+
+func getPerc() int {
 	bs := []Banner{
 		{
 			Id:     1,
@@ -48,7 +68,7 @@ func main() {
 	for _, v := range banners.Banners {
 		profit := float64(v.Reward) / float64(v.Trials)
 		rs := profit + math.Sqrt(math.Log(float64(banners.Count))/float64(v.Trials))
-		fmt.Println(rs, v.Id, int(rs*100))
+		//fmt.Println(rs, v.Id, int(rs*100))
 		var p Percentage
 		p.id = v.Id
 		l := len(percentage)
@@ -69,10 +89,18 @@ func main() {
 		percentage = append(percentage, p)
 
 	}
-	fmt.Printf("percentage: %#v\n", percentage)
+	//fmt.Printf("percentage: %#v\n", percentage)
 	rand.Seed(time.Now().UnixNano())
-	fmt.Println(num, rand.Intn(num+1))
+	rnd := rand.Intn(num + 1)
+	//fmt.Println(num, rnd)
+	var id int
+	for _, v := range percentage {
+		if rnd >= v.start && rnd <= v.end {
+			id = v.id
+		}
+	}
 
+	return id
 }
 
 //val[i] = x_mean[i] + math.Sqrt(math.Log(float64(agent.Trials))/(2*float64(arm[i].Count)))
