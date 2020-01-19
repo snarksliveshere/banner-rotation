@@ -92,6 +92,7 @@ func Bernoulli_try(arm *Arm) int {
 	}
 
 	rand.Seed(time.Now().UnixNano())
+
 	d := rand.Float64()
 
 	arm.Count++
