@@ -27,7 +27,7 @@ type Percentage struct {
 func main() {
 	mm := make(map[int]int, 3)
 	var id1, id2, id3 int
-	for i := 0; i < 1000; i++ {
+	for i := 0; i < 100; i++ {
 		id := getPerc()
 		if id == 1 {
 			id1++
@@ -44,6 +44,7 @@ func main() {
 	fmt.Printf("map: %#v", mm)
 }
 
+// выбрать баннер для показа. без учета дем.группы и слота
 func getPerc() int {
 	bs := []Banner{
 		{
@@ -103,4 +104,5 @@ func getPerc() int {
 	return id
 }
 
+// TODO: я должен показать баннер и учесть, что на него может быть склик
 //val[i] = x_mean[i] + math.Sqrt(math.Log(float64(agent.Trials))/(2*float64(arm[i].Count)))
