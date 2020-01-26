@@ -181,8 +181,8 @@ func getPercentage() ([]Percentage, int) {
 
 func randomClick() bool {
 	rand.Seed(time.Now().UnixNano())
-	a := rand.Intn(101)
-	if a > 50 {
+	b := rand.Float64()
+	if b > 0.5 {
 		return true
 	} else {
 		return false
@@ -198,6 +198,7 @@ func choose(percentage []Percentage, num int) (int, bool) {
 		if rnd >= v.start && rnd <= v.end {
 			id = v.id
 			m2[id] = m2[id] + 1
+
 			if randomClick() {
 				reward = true
 				m1[id] = m1[id] + 1
