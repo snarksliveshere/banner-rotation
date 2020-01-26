@@ -25,6 +25,7 @@ type Percentage struct {
 }
 
 var m1 map[int]int
+var m2 map[int]int
 var bnrs Banners
 
 func init() {
@@ -42,11 +43,12 @@ func init() {
 		{
 			Id:     3,
 			Trials: 20,
-			Reward: 6,
+			Reward: 10,
 		},
 	}
-	bnrs = Banners{Count: 70, Banners: bs}
-	m1 = make(map[int]int, 100)
+	bnrs = Banners{Count: 1, Banners: bs}
+	m1 = make(map[int]int, 1000)
+	m2 = make(map[int]int, 1000)
 }
 
 func getBanners() Banners {
@@ -60,13 +62,14 @@ func incBannersCount() {
 }
 
 func main() {
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 1000; i++ {
 		perc, num := getPercentage()
 		id, rew := choose(perc, num)
 		incBannerStat(id, rew)
 	}
 	fmt.Println(bnrs)
 	fmt.Println(m1)
+	fmt.Println(m2)
 	fmt.Println("olala")
 
 }
@@ -157,6 +160,7 @@ func choose(percentage []Percentage, num int) (int, bool) {
 		if rnd >= v.start && rnd <= v.end {
 			id = v.id
 			a := rand.Intn(101)
+			m2[id] = m2[id] + 1
 			if a > 50 {
 				reward = true
 				m1[id] = m1[id] + 1
