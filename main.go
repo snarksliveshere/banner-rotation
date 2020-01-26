@@ -24,28 +24,10 @@ type Percentage struct {
 	end   int
 }
 
-func main() {
-	mm := make(map[int]int, 3)
-	var id1, id2, id3 int
-	for i := 0; i < 100; i++ {
-		id := getPerc()
-		if id == 1 {
-			id1++
-			mm[id] = id1
-		} else if id == 2 {
-			id2++
-			mm[id] = id2
-		} else {
-			id3++
-			mm[id] = id3
-		}
+var m1 map[int]int
+var bnrs Banners
 
-	}
-	fmt.Printf("map: %#v", mm)
-}
-
-// выбрать баннер для показа. без учета дем.группы и слота
-func getPerc() int {
+func init() {
 	bs := []Banner{
 		{
 			Id:     1,
@@ -63,12 +45,85 @@ func getPerc() int {
 			Reward: 6,
 		},
 	}
-	banners := Banners{Count: 70, Banners: bs}
+	bnrs = Banners{Count: 70, Banners: bs}
+	m1 = make(map[int]int, 100)
+}
+
+func getBanners() Banners {
+	return bnrs
+}
+
+func incBannersCount() {
+	banners := getBanners()
+	banners.Count++
+	bnrs = banners
+}
+
+func main() {
+	for i := 0; i < 100; i++ {
+		perc, num := getPercentage()
+		id, rew := choose(perc, num)
+		incBannerStat(id, rew)
+	}
+	fmt.Println(bnrs)
+	fmt.Println(m1)
+	fmt.Println("olala")
+
+}
+
+func incBannerStat(id int, rew bool) {
+
+	for k, v := range bnrs.Banners {
+		if v.Id == id {
+			tr := v.Trials + 1
+			b := Banner{
+				Id:     v.Id,
+				Trials: tr,
+				Reward: v.Reward,
+			}
+
+			//v.Trials++
+
+			if rew {
+				r := v.Reward + 1
+				b.Reward = r
+			}
+			bnrs.Banners[k] = b
+
+		}
+	}
+
+}
+
+//func testT() {
+//	mm := make(map[int]int, 3)
+//	var id1, id2, id3 int
+//	for i := 0; i < 100; i++ {
+//		id, _ := getPerc()
+//		if id == 1 {
+//
+//			id1++
+//			mm[id] = id1
+//		} else if id == 2 {
+//			id2++
+//			mm[id] = id2
+//		} else {
+//			id3++
+//			mm[id] = id3
+//		}
+//
+//	}
+//	fmt.Println(bnrs)
+//	fmt.Println(mm)
+//	fmt.Printf("map: %#v", mm)
+//}
+
+func getPercentage() ([]Percentage, int) {
 	var num int
 	var percentage []Percentage
-	for _, v := range banners.Banners {
+	for _, v := range bnrs.Banners {
 		profit := float64(v.Reward) / float64(v.Trials)
-		rs := profit + math.Sqrt(math.Log(float64(banners.Count))/float64(v.Trials))
+		rs := profit + math.Sqrt(math.Log(float64(bnrs.Count))/float64(v.Trials))
 		//fmt.Println(rs, v.Id, int(rs*100))
 		var p Percentage
 		p.id = v.Id
@@ -90,18 +145,29 @@ func getPerc() int {
 		percentage = append(percentage, p)
 
 	}
-	//fmt.Printf("percentage: %#v\n", percentage)
+	return percentage, num
+}
+
+func choose(percentage []Percentage, num int) (int, bool) {
 	rand.Seed(time.Now().UnixNano())
 	rnd := rand.Intn(num + 1)
-	//fmt.Println(num, rnd)
 	var id int
+	var reward bool
 	for _, v := range percentage {
 		if rnd >= v.start && rnd <= v.end {
 			id = v.id
+			a := rand.Intn(101)
+			if a > 50 {
+				reward = true
+				m1[id] = m1[id] + 1
+			}
+
 		}
 	}
 
-	return id
+	incBannersCount()
+
+	return id, reward
 }
 
 // TODO: я должен показать баннер и учесть, что на него может быть склик
