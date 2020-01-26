@@ -27,7 +27,7 @@ type Percentage struct {
 func main() {
 	mm := make(map[int]int, 3)
 	var id1, id2, id3 int
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 1000; i++ {
 		id := getPerc()
 		if id == 1 {
 			id1++
@@ -49,21 +49,21 @@ func getPerc() int {
 	bs := []Banner{
 		{
 			Id:     1,
-			Trials: 20,
-			Reward: 2,
-		},
-		{
-			Id:     2,
 			Trials: 30,
 			Reward: 4,
 		},
 		{
+			Id:     2,
+			Trials: 30,
+			Reward: 3,
+		},
+		{
 			Id:     3,
-			Trials: 20,
+			Trials: 30,
 			Reward: 6,
 		},
 	}
-	banners := Banners{Count: 70, Banners: bs}
+	banners := Banners{Count: 90, Banners: bs}
 	var num int
 	var percentage []Percentage
 	for _, v := range banners.Banners {
@@ -88,7 +88,6 @@ func getPerc() int {
 		}
 
 		percentage = append(percentage, p)
-
 	}
 	//fmt.Printf("percentage: %#v\n", percentage)
 	rand.Seed(time.Now().UnixNano())
