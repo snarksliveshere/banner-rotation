@@ -56,38 +56,80 @@ CREATE TABLE statistics
 );
 
 
-
-insert into calendar.calendar (date, description)
-values ('2019-11-10', 'some desc'),
-       ('2019-11-12', 'some desc2'),
-       ('2019-11-15', 'some desc3'),
-       ('2019-10-20', 'some desc4')
+INSERT INTO banner (banner_id)
+VALUES ('some_male1_adult_app_id'),
+       ('some_male2_adult_app_id'),
+       ('some_male3_adult_app_id'),
+       ('some_male1_kid_app_id'),
+       ('some_male2_kid_app_id'),
+       ('some_male3_kid_app_id'),
+       ('some_female1_adult_app_id'),
+       ('some_female2_adult_app_id'),
+       ('some_female3_adult_app_id'),
+       ('some_female1_kid_app_id'),
+       ('some_female2_kid_app_id'),
+       ('some_female3_kid_app_id')
 ;
-
-insert into calendar.event (date_fk, time, title, description)
-values ((SELECT id FROM calendar.calendar WHERE date = '2019-11-10'), '2019-11-10 07:18:09.767953 +00:00',
-        'some title event1', 'desc event1'),
-       ((SELECT id FROM calendar.calendar WHERE date = '2019-11-10'), '2019-11-10 09:20:09.767953 +00:00',
-        'some title event2', 'desc event2'),
-       ((SELECT id FROM calendar.calendar WHERE date = '2019-11-12'), '2019-11-12 10:20:09.767953 +00:00',
-        'some title event3', 'desc event3'),
-       ((SELECT id FROM calendar.calendar WHERE date = '2019-10-20'), '2019-10-20 10:30:09.767953 +00:00',
-        'some title event4', 'desc event4')
+INSERT INTO audience (audience_id)
+VALUES ('male_kid'),
+       ('female_kid'),
+       ('male_adult'),
+       ('female_adult')
 ;
-CREATE TABLE calendar.message
-(
-    id     BIGSERIAL PRIMARY KEY,
-    status TEXT NOT NULL,
-    msg    TEXT
-);
-WITH cte AS (
-    INSERT INTO calendar.calendar (date, description)
-        VALUES (NOW() :: date, 'test_msg')
-        RETURNING id
-)
-INSERT
-INTO calendar.event (date_fk, time, title, description)
-VALUES ((SELECT id FROM cte),
-        NOW() + interval '5 minutes',
-        'test_title',
-        'test_description');
+INSERT INTO slot (slot_id)
+VALUES ('top_slot_id'),
+       ('aside_left_slot_id'),
+       ('aside_right_slot_id'),
+       ('bottom_slot_id')
+;
+INSERT INTO audience2banner (audience_fk, banner_fk)
+VALUES
+       (
+        (SELECT id FROM audience WHERE audience_id = 'male_adult'),
+        (SELECT id FROM banner WHERE banner_id = 'some_male1_adult_app_id')
+       ),
+       (
+           (SELECT id FROM audience WHERE audience_id = 'male_adult'),
+           (SELECT id FROM banner WHERE banner_id = 'some_male2_adult_app_id')
+       ),
+       (
+           (SELECT id FROM audience WHERE audience_id = 'male_adult'),
+           (SELECT id FROM banner WHERE banner_id = 'some_male3_adult_app_id')
+       ),
+       (
+           (SELECT id FROM audience WHERE audience_id = 'female_adult'),
+           (SELECT id FROM banner WHERE banner_id = 'some_female1_adult_app_id')
+       ),
+       (
+           (SELECT id FROM audience WHERE audience_id = 'female_adult'),
+           (SELECT id FROM banner WHERE banner_id = 'some_female2_adult_app_id')
+       ),
+       (
+           (SELECT id FROM audience WHERE audience_id = 'female_adult'),
+           (SELECT id FROM banner WHERE banner_id = 'some_female3_adult_app_id')
+       ),
+       (
+           (SELECT id FROM audience WHERE audience_id = 'male_kid'),
+           (SELECT id FROM banner WHERE banner_id = 'some_male1_kid_app_id')
+       ),
+       (
+           (SELECT id FROM audience WHERE audience_id = 'male_kid'),
+           (SELECT id FROM banner WHERE banner_id = 'some_male2_kid_app_id')
+       ),
+       (
+           (SELECT id FROM audience WHERE audience_id = 'male_kid'),
+           (SELECT id FROM banner WHERE banner_id = 'some_male3_kid_app_id')
+       ),
+       (
+           (SELECT id FROM audience WHERE audience_id = 'female_kid'),
+           (SELECT id FROM banner WHERE banner_id = 'some_female1_kid_app_id')
+       ),
+       (
+           (SELECT id FROM audience WHERE audience_id = 'female_kid'),
+           (SELECT id FROM banner WHERE banner_id = 'some_female2_kid_app_id')
+       ),
+       (
+           (SELECT id FROM audience WHERE audience_id = 'female_kid'),
+           (SELECT id FROM banner WHERE banner_id = 'some_female3_kid_app_id')
+       )
+;
