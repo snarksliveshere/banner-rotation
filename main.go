@@ -29,24 +29,46 @@ var m2 map[int]int
 var bnrs Banners
 
 func init() {
+	//bs := []Banner{
+	//	{
+	//		Id:     1,
+	//		Trials: 20,
+	//		Reward: 2,
+	//	},
+	//	{
+	//		Id:     2,
+	//		Trials: 30,
+	//		Reward: 4,
+	//	},
+	//	{
+	//		Id:     3,
+	//		Trials: 20,
+	//		Reward: 10,
+	//	},
+	//}
 	bs := []Banner{
 		{
 			Id:     1,
-			Trials: 20,
-			Reward: 2,
+			Trials: 0,
+			Reward: 0,
 		},
 		{
 			Id:     2,
-			Trials: 30,
-			Reward: 4,
+			Trials: 0,
+			Reward: 0,
 		},
 		{
 			Id:     3,
-			Trials: 20,
-			Reward: 10,
+			Trials: 0,
+			Reward: 0,
 		},
 	}
-	bnrs = Banners{Count: 1, Banners: bs}
+	var count int
+	for _, v := range bs {
+		count += v.Trials
+	}
+
+	bnrs = Banners{Count: count, Banners: bs}
 	m1 = make(map[int]int, 1000)
 	m2 = make(map[int]int, 1000)
 }
@@ -125,8 +147,14 @@ func getPercentage() ([]Percentage, int) {
 	var num int
 	var percentage []Percentage
 	for _, v := range bnrs.Banners {
-		profit := float64(v.Reward) / float64(v.Trials)
-		rs := profit + math.Sqrt(math.Log(float64(bnrs.Count))/float64(v.Trials))
+		var rs float64
+		if v.Trials == 0 {
+			rs = 0.5
+		} else {
+			profit := float64(v.Reward) / float64(v.Trials)
+			rs = profit + math.Sqrt(math.Log(float64(bnrs.Count))/float64(v.Trials))
+		}
+
 		//fmt.Println(rs, v.Id, int(rs*100))
 		var p Percentage
 		p.id = v.Id
@@ -151,6 +179,16 @@ func getPercentage() ([]Percentage, int) {
 	return percentage, num
 }
 
+func randomClick() bool {
+	rand.Seed(time.Now().UnixNano())
+	a := rand.Intn(101)
+	if a > 50 {
+		return true
+	} else {
+		return false
+	}
+}
+
 func choose(percentage []Percentage, num int) (int, bool) {
 	rand.Seed(time.Now().UnixNano())
 	rnd := rand.Intn(num + 1)
@@ -159,9 +197,8 @@ func choose(percentage []Percentage, num int) (int, bool) {
 	for _, v := range percentage {
 		if rnd >= v.start && rnd <= v.end {
 			id = v.id
-			a := rand.Intn(101)
 			m2[id] = m2[id] + 1
-			if a > 50 {
+			if randomClick() {
 				reward = true
 				m1[id] = m1[id] + 1
 			}
