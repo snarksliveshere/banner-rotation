@@ -3,6 +3,7 @@ package task
 import (
 	"fmt"
 	"github.com/go-pg/pg"
+	"log"
 	"math"
 )
 
@@ -25,6 +26,7 @@ type Percentage struct {
 
 var m1 map[int]int // clicks
 var m2 map[int]int // shows
+var bannerMap map[int]Banner
 var bnrs Banners
 
 func Run(db *pg.DB) {
@@ -32,22 +34,33 @@ func Run(db *pg.DB) {
 
 	m1 = make(map[int]int, 100)
 	m2 = make(map[int]int, 100)
-	for i := 0; i < 1000000; i++ {
-		bId := getBanner(&banners)
-		if _, ok := m2[bId]; ok {
-			m2[bId] = m2[bId] + 1
-		} else {
-			m2[bId] = 1
+	bannerMap = make(map[int]Banner, 10)
+	for i := 0; i < 1000; i++ {
+		// TODO: len(banners)
+		bId, err := getBanner(&banners)
+		if err != nil {
+			log.Fatal(err)
 		}
+		//if _, ok := m2[bId]; ok {
+		//	m2[bId] = m2[bId] + 1
+		//} else {
+		//	m2[bId] = 1
+		//}
+		b := Banner{Id: bId}
+
+		bm, ok := bannerMap[bId]
+		if ok {
+			b.Trials = bm.Trials + 1
+		}
+
 		var rew bool
 		if randomClick() {
-			if _, ok := m1[bId]; ok {
-				m1[bId] = m1[bId] + 1
-			} else {
-				m1[bId] = 1
-			}
 			rew = true
+			if ok {
+				b.Reward = bannerMap[bId].Reward + 1
+			}
 		}
+		bannerMap[bId] = b
 		//
 		//sl := getTestRes()
 		//if i == 1 || i == 9999999{
@@ -60,10 +73,10 @@ func Run(db *pg.DB) {
 		incBannerStatistics(&banners, bId, rew)
 	}
 
-	insertIntoStat(db)
+	//insertIntoStat(db)
 	fmt.Println(banners)
-	fmt.Println(m1)
-	fmt.Println(m2)
+	fmt.Println(bannerMap)
+	//fmt.Println(m2)
 	fmt.Println("olala")
 
 }

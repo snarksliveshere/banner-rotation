@@ -1,28 +1,40 @@
 package task
 
 import (
+	"errors"
 	"math"
 	"math/rand"
 	"time"
 )
 
-func getBanner(banners *Banners) int {
+func getBanner(banners *Banners) (int, error) {
+	if len(banners.Banners) == 0 {
+		return 0, errors.New("no banners")
+	}
 	var rs float64
 	var bId int
 	for _, v := range banners.Banners {
 		if v.Trials == 0 {
+			// Баннер еще не ротировался, даем ему сразу шанс
 			bId = v.Id
 			break
 		} else {
 			profit := float64(v.Reward) / float64(v.Trials)
-			res := profit + math.Sqrt(math.Log(float64(banners.Count))/float64(v.Trials))
+			var res float64
+			if res == 0 {
+				// Т.е. если у меня очень непопулярный баннер, вообще без скликов, даем ему шанс
+				res = getRandomFloat()
+			} else {
+				res = profit + math.Sqrt(math.Log(float64(banners.Count))/float64(v.Trials))
+			}
 			if res > rs {
 				bId = v.Id
 				rs = res
 			}
 		}
 	}
-	return bId
+
+	return bId, nil
 }
 
 func getPercentage() ([]Percentage, int) {
@@ -162,11 +174,15 @@ func choose(percentage []Percentage, num int) (int, bool) {
 }
 
 func randomClick() bool {
-	rand.Seed(time.Now().UnixNano())
-	b := rand.Float64()
-	if b > 0.9 {
+	b := getRandomFloat()
+	if b > 0.95 {
 		return true
 	} else {
 		return false
 	}
+}
+
+func getRandomFloat() float64 {
+	rand.Seed(time.Now().UnixNano())
+	return rand.Float64()
 }
