@@ -2,9 +2,16 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"math"
 	"math/rand"
 	"time"
+
+	"github.com/snarksliveshere/banner-rotation/models"
+
+	"github.com/kelseyhightower/envconfig"
+
+	"github.com/snarksliveshere/banner-rotation/configs"
 )
 
 type Banner struct {
@@ -28,7 +35,37 @@ var m1 map[int]int
 var m2 map[int]int
 var bnrs Banners
 
+func failOnError(err error, msg string) {
+	if err != nil {
+		log.Fatalf("%s: %s", msg, err)
+	}
+}
+
 func init() {
+	var conf configs.AppConfig
+	failOnError(envconfig.Process("reg_service", &conf), "failed to init config")
+	var loadedRows []*models.Banner
+	dbInst := configs.DB{Conf: &conf}
+	db := dbInst.CreatePgConn()
+	//err := db.Model(&loadedRows).
+	//	Column("id", "banner_id").
+	//	Select()
+	err := db.Model(&loadedRows).
+		Column("banner.id", "banner.banner_id").
+		ColumnExpr("audience.id AS audience, audience.audience_id").
+		Join("JOIN audience2banner a2b ON a2b.banner_fk = banner.id").
+		Join("JOIN audience audience ON a2b.audience_fk = audience.id").
+		Select()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	//err := r.db.Model(&r.rows).
+	//	Column("event.time", "event.title", "event.description", "event.time", "event.id", "event.date_fk").
+	//	Join("JOIN calendar.calendar ON event.date_fk = calendar.id").
+	//	Where("calendar.date >= ?", from).
+	//	Where("calendar.date <= ?", till).
+	//	Select()
 	//bs := []Banner{
 	//	{
 	//		Id:     1,
