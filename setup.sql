@@ -89,7 +89,23 @@ VALUES
         (SELECT id FROM banner WHERE banner_id = 'some_male1_adult_app_id')
        ),
        (
+           (SELECT id FROM audience WHERE audience_id = 'male_kid'),
+           (SELECT id FROM banner WHERE banner_id = 'some_male1_adult_app_id')
+       ),
+       (
+           (SELECT id FROM audience WHERE audience_id = 'female_kid'),
+           (SELECT id FROM banner WHERE banner_id = 'some_male1_adult_app_id')
+       ),
+       (
+           (SELECT id FROM audience WHERE audience_id = 'female_adult'),
+           (SELECT id FROM banner WHERE banner_id = 'some_male1_adult_app_id')
+       ),
+       (
            (SELECT id FROM audience WHERE audience_id = 'male_adult'),
+           (SELECT id FROM banner WHERE banner_id = 'some_male2_adult_app_id')
+       ),
+       (
+           (SELECT id FROM audience WHERE audience_id = 'female_adult'),
            (SELECT id FROM banner WHERE banner_id = 'some_male2_adult_app_id')
        ),
        (
@@ -98,6 +114,10 @@ VALUES
        ),
        (
            (SELECT id FROM audience WHERE audience_id = 'female_adult'),
+           (SELECT id FROM banner WHERE banner_id = 'some_female1_adult_app_id')
+       ),
+       (
+           (SELECT id FROM audience WHERE audience_id = 'female_kid'),
            (SELECT id FROM banner WHERE banner_id = 'some_female1_adult_app_id')
        ),
        (
@@ -126,6 +146,10 @@ VALUES
        ),
        (
            (SELECT id FROM audience WHERE audience_id = 'female_kid'),
+           (SELECT id FROM banner WHERE banner_id = 'some_female2_kid_app_id')
+       ),
+       (
+           (SELECT id FROM audience WHERE audience_id = 'female_adult'),
            (SELECT id FROM banner WHERE banner_id = 'some_female2_kid_app_id')
        ),
        (

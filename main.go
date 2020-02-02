@@ -31,6 +31,11 @@ type Percentage struct {
 	end   int
 }
 
+type TestBanner struct {
+	Banner   uint64
+	Audience []uint64
+}
+
 var m1 map[int]int
 var m2 map[int]int
 var bnrs Banners
@@ -60,6 +65,11 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	tbs := getTestBanners(loadedRows)
+	fmt.Println(tbs)
+	fmt.Println("olala")
+
 	//err := r.db.Model(&r.rows).
 	//	Column("event.time", "event.title", "event.description", "event.time", "event.id", "event.date_fk").
 	//	Join("JOIN calendar.calendar ON event.date_fk = calendar.id").
@@ -108,6 +118,31 @@ func init() {
 	bnrs = Banners{Count: count, Banners: bs}
 	m1 = make(map[int]int, 1000)
 	m2 = make(map[int]int, 1000)
+}
+
+func getTestBanners(loadedRows []*models.Banner) []TestBanner {
+	tbs := make([]TestBanner, 0, 10)
+
+	for _, v := range loadedRows {
+		var c bool
+		for _, i := range tbs {
+			if i.Banner == v.Id {
+				c = true
+			}
+		}
+		if c {
+			continue
+		}
+		b := TestBanner{Banner: v.Id}
+		for _, k := range loadedRows {
+			if k.Id != v.Id {
+				continue
+			}
+			b.Audience = append(b.Audience, k.Audience)
+		}
+		tbs = append(tbs, b)
+	}
+	return tbs
 }
 
 func getBanners() Banners {
