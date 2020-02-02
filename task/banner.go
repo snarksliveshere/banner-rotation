@@ -60,7 +60,7 @@ func Run(db *pg.DB) {
 		incBannerStatistics(&banners, bId, rew)
 	}
 
-	//insertIntoStat(db)
+	insertIntoStat(db)
 	fmt.Println(banners)
 	fmt.Println(m1)
 	fmt.Println(m2)
