@@ -23,6 +23,8 @@ func getBanner(banners *Banners) (int, error) {
 			var res float64
 			if res == 0 {
 				// Т.е. если у меня очень непопулярный баннер, вообще без скликов, даем ему шанс
+				// Вообще, здесь должна быть более сложная логика, т.к. тут я каждый раз даю баннеру шанс,
+				// а это должно считаться гораздо сложнее
 				res = getRandomFloat()
 			} else {
 				res = profit + math.Sqrt(math.Log(float64(banners.Count))/float64(v.Trials))
