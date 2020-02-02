@@ -21,13 +21,20 @@ func getAudience(db *pg.DB) []uint64 {
 	return sl
 }
 
-func getBannerStat(db *pg.DB) {
+func getBannerStat(db *pg.DB) Banners {
 	var loadedRows []*models.Statistics
-	err := db.Model(&loadedRows).
-		Column("statistics.clicks", "statistics.shows", "statistics.id", "a2b.banner_fk").
-		Join("RIGHT JOIN audience2banner a2b ON statistics.audience_fk = a2b.audience_fk").
-		Where("a2b.audience_fk = ?", 1).
-		Select()
+	query := `SELECT DISTINCT statistics.clicks, statistics.shows, statistics.banner_fk
+				FROM statistics
+				RIGHT JOIN audience2banner a2b ON statistics.audience_fk = a2b.audience_fk
+				WHERE a2b.audience_fk = ?
+;`
+	_, err := db.Query(&loadedRows, query, 1)
+	//err := db.Model(&loadedRows).
+	//	Column("statistics.clicks", "statistics.shows", "a2b.banner_fk").
+	//	Join("RIGHT JOIN audience2banner a2b ON statistics.audience_fk = a2b.audience_fk").
+	//	Where("a2b.audience_fk = ?", 1).
+	//	Group("statistics.clicks", "statistics.shows", "a2b.banner_fk").
+	//	Select()
 
 	if err != nil {
 		log.Fatal(err)
@@ -38,12 +45,12 @@ func getBannerStat(db *pg.DB) {
 		count = count + int(v.Clicks)
 		b := Banner{
 			Id:     int(v.BannerFK),
-			Trials: int(v.Clicks),
-			Reward: int(v.Shows),
+			Trials: int(v.Shows),
+			Reward: int(v.Clicks),
 		}
 		bsInit = append(bsInit, b)
 	}
-	bnrs = Banners{Count: count, Banners: bsInit}
+	return Banners{Count: count, Banners: bsInit}
 }
 
 func insertIntoStat(db *pg.DB) {
