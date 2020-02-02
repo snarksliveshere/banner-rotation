@@ -45,3 +45,23 @@ func getBannerStat(db *pg.DB) {
 	}
 	bnrs = Banners{Count: count, Banners: bsInit}
 }
+
+func insertIntoStat(db *pg.DB) {
+	var loadedRows []*models.Statistics
+
+	for i, v := range m2 {
+		var row models.Statistics
+		row.Shows = uint64(v)
+		row.Clicks = uint64(m1[i])
+		row.BannerFK = uint64(i)
+		row.AudienceFK = 1
+		loadedRows = append(loadedRows, &row)
+	}
+
+	err := db.Insert(&loadedRows)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+}

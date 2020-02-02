@@ -25,8 +25,8 @@ type Percentage struct {
 	end   int
 }
 
-var m1 map[int]int
-var m2 map[int]int
+var m1 map[int]int // clicks
+var m2 map[int]int // shows
 var bnrs Banners
 
 func Run(db *pg.DB) {
@@ -38,6 +38,8 @@ func Run(db *pg.DB) {
 		id, rew := choose(perc, num)
 		incBannerStat(id, rew)
 	}
+
+	insertIntoStat(db)
 	fmt.Println(bnrs)
 	fmt.Println(m1)
 	fmt.Println(m2)
