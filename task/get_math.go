@@ -177,7 +177,7 @@ func choose(percentage []Percentage, num int) (int, bool) {
 
 func randomClick() bool {
 	b := getRandomFloat()
-	if b > 0.95 {
+	if b < 0.05 {
 		return true
 	} else {
 		return false

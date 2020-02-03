@@ -5,7 +5,7 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 162.30.99.0/24
+        - subnet: 163.30.99.0/24
 
 services:
   manager-postgres:
@@ -18,10 +18,10 @@ services:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: banner_rotation
     ports:
-      - "54221:5432"
+      - "54222:5432"
     networks:
       apinet:
-        ipv4_address: 162.30.99.51
+        ipv4_address: 163.30.99.51
 #
 #  rabbit:
 #    image: "rabbitmq:3-management"

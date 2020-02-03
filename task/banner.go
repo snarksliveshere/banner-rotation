@@ -3,6 +3,7 @@ package task
 import (
 	"fmt"
 	"github.com/go-pg/pg"
+	"github.com/snarksliveshere/banner-rotation/models"
 	"log"
 	"math"
 )
@@ -11,6 +12,14 @@ type Banner struct {
 	Id     int
 	Trials int
 	Reward int
+}
+
+type BannerStat struct {
+	Id       int
+	Trials   int
+	Reward   int
+	Slot     int
+	Audience int
 }
 
 type Banners struct {
@@ -34,33 +43,46 @@ func Run(db *pg.DB) {
 
 	m1 = make(map[int]int, 100)
 	m2 = make(map[int]int, 100)
-	bannerMap = make(map[int]Banner, 10)
+	//bannerMap = make(map[int]Banner, 10)
+	//bannerMapStat := make(map[int]BannerStat, 10)
+	//var statRows []*models.Statistics
 	for i := 0; i < 1000; i++ {
 		// TODO: len(banners)
 		bId, err := getBanner(&banners)
 		if err != nil {
 			log.Fatal(err)
 		}
-		//if _, ok := m2[bId]; ok {
-		//	m2[bId] = m2[bId] + 1
-		//} else {
-		//	m2[bId] = 1
+		//row := models.Statistics{
+		//	AudienceFK: 2,
+		//	BannerFK:   uint64(bId),
+		//	SlotFK:     2,
 		//}
-		b := Banner{Id: bId}
+		//var isAlreadyIn bool
+		//for _, v := range statRows {
+		//	if v.BannerFK == uint64(bId) {
+		//		isAlreadyIn = true
+		//	}
+		//}
+		//row.Shows++
+		//b := BannerStat{
+		//	Id:       bId,
+		//	Trials:   0,
+		//	Reward:   0,
+		//	Slot:     2,
+		//	Audience: 2,
+		//}
 
-		bm, ok := bannerMap[bId]
-		if ok {
-			b.Trials = bm.Trials + 1
-		}
+		//bm, ok := bannerMapStat[bId]
+		//if ok {
+		//	b.Trials = bm.Trials + 1
+		//}
 
 		var rew bool
 		if randomClick() {
 			rew = true
-			if ok {
-				b.Reward = bannerMap[bId].Reward + 1
-			}
+			//row.Clicks++
 		}
-		bannerMap[bId] = b
+		//bannerMap[bId] = b
 		//
 		//sl := getTestRes()
 		//if i == 1 || i == 9999999{
@@ -71,9 +93,22 @@ func Run(db *pg.DB) {
 		//id, rew := choose(perc, num)
 		//incBannerStat(bId, rew)
 		incBannerStatistics(&banners, bId, rew)
+		//statRows = append(statRows, &row)
 	}
+	var statRows []*models.Statistics
+	for _, v := range banners.Banners {
+		row := models.Statistics{
+			AudienceFK: 2,
+			BannerFK:   uint64(v.Id),
+			SlotFK:     2,
+			Clicks:     uint64(v.Reward),
+			Shows:      uint64(v.Trials),
+		}
+		statRows = append(statRows, &row)
+	}
+	fmt.Println("ollalal1")
 
-	//insertIntoStat(db)
+	insertIntoStat(db, statRows)
 	fmt.Println(banners)
 	fmt.Println(bannerMap)
 	//fmt.Println(m2)
