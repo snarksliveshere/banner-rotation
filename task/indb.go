@@ -19,7 +19,7 @@ func getBannerStat(db *pg.DB) Banners {
 		LEFT JOIN statistics s ON banner.id = s.banner_fk
 		WHERE a2b.audience_fk = 2
 		AND b2s.slot_fk = 2`
-	_, err := db.Query(&loadedRows, query, 1)
+	_, err := db.Query(&loadedRows, query)
 
 	if err != nil {
 		log.Fatal(err)
