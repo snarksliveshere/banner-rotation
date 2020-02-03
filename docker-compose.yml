@@ -36,29 +36,24 @@ services:
 #      apinet:
 #        ipv4_address: 162.30.99.53
 #
-#  grpc_server:
-#    build:
-#      context: ./server
-#    container_name: grpc
-#    restart: on-failure
-#    depends_on:
-#      - manager-postgres
-#    environment:
-#      REG_SERVICE_DB_USER: md
-#      REG_SERVICE_DB_PASSWORD: secret
-#      REG_SERVICE_DB_NAME: md_calendar
-#      REG_SERVICE_DB_HOST: dbpg
-#      REG_SERVICE_DB_PORT: 5432
-#      REG_SERVICE_LOG_LEVEL: info
-#      REG_SERVICE_WEB_PORT: 8888
-#      REG_SERVICE_GRPC_PORT: 50054
-#      REG_SERVICE_LISTEN_IP: 0.0.0.0
-#    ports:
-#      - "8888:8888"
-#      - "9102:9102"
-#    networks:
-#      apinet:
-#        ipv4_address: 162.30.99.50
+  test_server:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: test
+    restart: on-failure
+    depends_on:
+      - manager-postgres
+    environment:
+      REG_SERVICE_DB_USER: md
+      REG_SERVICE_DB_PASSWORD: secret
+      REG_SERVICE_DB_NAME: banner_rotation
+      REG_SERVICE_DB_HOST: dbpg
+      REG_SERVICE_DB_PORT: 5432
+      REG_SERVICE_LOG_LEVEL: info
+    networks:
+      apinet:
+        ipv4_address: 163.30.99.52
 #
 #  scheduler:
 #    build: ./scheduler
