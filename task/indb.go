@@ -67,7 +67,7 @@ func insertIntoStat(db *pg.DB) {
 
 	//err := db.Insert(&loadedRows)
 	_, err := db.Model(&loadedRows).
-		OnConflict("(audience_fk, banner_fk) DO UPDATE").
+		OnConflict("(audience_fk, banner_fk, slot_fk) DO UPDATE").
 		Set("clicks = EXCLUDED.clicks").
 		Set("shows = EXCLUDED.shows").
 		Insert()
