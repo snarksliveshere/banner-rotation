@@ -15,24 +15,15 @@ func getBanner(banners *Banners) (int, error) {
 	var bId int
 	for _, v := range banners.Banners {
 		if v.Trials == 0 {
-			// Баннер еще не ротировался, даем ему сразу шанс
+			// Баннер еще не ротировался, даем ему сразу шанс (инициализация)
 			bId = v.Id
 			break
-		} else {
-			profit := float64(v.Reward) / float64(v.Trials)
-			var res float64
-			if res == 0 {
-				// Т.е. если у меня очень непопулярный баннер, вообще без скликов, даем ему шанс
-				// Вообще, здесь должна быть более сложная логика, т.к. тут я каждый раз даю баннеру шанс,
-				// а это должно считаться гораздо сложнее
-				res = getRandomFloat()
-			} else {
-				res = profit + math.Sqrt(math.Log(float64(banners.Count))/float64(v.Trials))
-			}
-			if res > rs {
-				bId = v.Id
-				rs = res
-			}
+		}
+		profit := float64(v.Reward) / float64(v.Trials)
+		res := profit + math.Sqrt(math.Log(float64(banners.Count))/float64(v.Trials))
+		if res > rs {
+			bId = v.Id
+			rs = res
 		}
 	}
 
