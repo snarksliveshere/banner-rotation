@@ -2,24 +2,17 @@ package grpc
 
 import (
 	"context"
-	"encoding/json"
-	"github.com/golang/protobuf/jsonpb"
 	"github.com/snarksliveshere/banner-rotation/api/proto"
-	"github.com/snarksliveshere/otus_golang/hw_17_monitoring/server/config"
-	"github.com/snarksliveshere/otus_golang/hw_17_monitoring/server/entity"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-	"strings"
 )
 
-type Response struct {
-	Date   entity.Date    `json:"day,omitempty"`
-	Event  entity.Event   `json:"event,omitempty"`
-	Events []entity.Event `json:"events,omitempty"`
-	Error  string         `json:"error,omitempty"`
-	Status string         `json:"status,omitempty"`
-	//Result     []string      `json:"result,omitempty"`
-}
+//type Response struct {
+//	Date   entity.Date    `json:"day,omitempty"`
+//	Event  entity.Event   `json:"event,omitempty"`
+//	Events []entity.Event `json:"events,omitempty"`
+//	Error  string         `json:"error,omitempty"`
+//	Status string         `json:"status,omitempty"`
+//	//Result     []string      `json:"result,omitempty"`
+//}
 
 func (s ServerBanner) SendGetBannerMessage(context.Context, *proto.GetBannerRequestMessage) (*proto.GetBannerResponseMessage, error) {
 	panic("implement me")

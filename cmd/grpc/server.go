@@ -28,7 +28,7 @@ func goGRPC(conf configs.AppConfig, log *zap.SugaredLogger) {
 	listenAddr := conf.ListenIP + ":" + conf.GRPCPort
 	listen, err := net.Listen("tcp", listenAddr)
 	if err != nil {
-		log.Fatal("failed to listen addr: %s, error: %v\n", listenAddr, err.Error())
+		log.DPanic("failed to listen addr: %s, error: %v\n", listenAddr, err.Error())
 	}
 
 	grpcServer := grpc.NewServer()
@@ -38,6 +38,7 @@ func goGRPC(conf configs.AppConfig, log *zap.SugaredLogger) {
 		db:  dbInst.CreatePgConn(),
 		log: log,
 	}
+
 	proto.RegisterBannerServiceServer(grpcServer, serverBanner)
 
 	err = grpcServer.Serve(listen)
@@ -45,7 +46,7 @@ func goGRPC(conf configs.AppConfig, log *zap.SugaredLogger) {
 		log.DPanic(err.Error())
 	}
 
-	log.Infof("Run grpc server on: %s\n", listenAddr)
+	log.Infof("Run GRPC server on: %s\n", listenAddr)
 }
 
 //protoc ./proto/events.proto --go_out=plugins=grpc:.

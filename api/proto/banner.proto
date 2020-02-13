@@ -14,15 +14,15 @@ service BannerService {
 }
 
 message Slot {
-    uint64 id = 1;
+    string id = 1;
 }
 
 message Audience {
-    uint64 id = 1;
+    string id = 1;
 }
 
 message Banner {
-    uint64 id = 1;
+    string id = 1;
 }
 
 message Date {
