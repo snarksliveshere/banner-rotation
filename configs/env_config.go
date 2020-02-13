@@ -9,15 +9,14 @@ type DbConfig struct {
 	DBName     string `envconfig:"DB_NAME" required:"true"`
 }
 
-//
-//type Addr struct {
-//	GRPCPort string `envconfig:"GRPC_PORT" required:"true"`
-//	WEBPort  string `envconfig:"WEB_PORT" required:"true"`
-//	ListenIP string `envconfig:"LISTEN_IP"`
-//}
+type Addr struct {
+	GRPCPort string `envconfig:"GRPC_PORT" required:"true"`
+	WEBPort  string `envconfig:"WEB_PORT" required:"true"`
+	ListenIP string `envconfig:"LISTEN_IP"`
+}
 
 type AppConfig struct {
 	DbConfig
-	//Addr
+	Addr
 	LogLevel string `envconfig:"LOG_LEVEL" required:"true"`
 }

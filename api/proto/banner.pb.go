@@ -181,6 +181,92 @@ func (m *Date) GetDate() *timestamp.Timestamp {
 	return nil
 }
 
+type Response struct {
+	Result               string   `protobuf:"bytes,1,opt,name=result,proto3" json:"result,omitempty"`
+	Message              string   `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Response) Reset()         { *m = Response{} }
+func (m *Response) String() string { return proto.CompactTextString(m) }
+func (*Response) ProtoMessage()    {}
+func (*Response) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45b86f169d1f5a56, []int{4}
+}
+
+func (m *Response) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Response.Unmarshal(m, b)
+}
+func (m *Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Response.Marshal(b, m, deterministic)
+}
+func (m *Response) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Response.Merge(m, src)
+}
+func (m *Response) XXX_Size() int {
+	return xxx_messageInfo_Response.Size(m)
+}
+func (m *Response) XXX_DiscardUnknown() {
+	xxx_messageInfo_Response.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Response proto.InternalMessageInfo
+
+func (m *Response) GetResult() string {
+	if m != nil {
+		return m.Result
+	}
+	return ""
+}
+
+func (m *Response) GetMessage() string {
+	if m != nil {
+		return m.Message
+	}
+	return ""
+}
+
+type ResponseBannerMessage struct {
+	Response             *Response `protobuf:"bytes,1,opt,name=response,proto3" json:"response,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
+	XXX_unrecognized     []byte    `json:"-"`
+	XXX_sizecache        int32     `json:"-"`
+}
+
+func (m *ResponseBannerMessage) Reset()         { *m = ResponseBannerMessage{} }
+func (m *ResponseBannerMessage) String() string { return proto.CompactTextString(m) }
+func (*ResponseBannerMessage) ProtoMessage()    {}
+func (*ResponseBannerMessage) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45b86f169d1f5a56, []int{5}
+}
+
+func (m *ResponseBannerMessage) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ResponseBannerMessage.Unmarshal(m, b)
+}
+func (m *ResponseBannerMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ResponseBannerMessage.Marshal(b, m, deterministic)
+}
+func (m *ResponseBannerMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ResponseBannerMessage.Merge(m, src)
+}
+func (m *ResponseBannerMessage) XXX_Size() int {
+	return xxx_messageInfo_ResponseBannerMessage.Size(m)
+}
+func (m *ResponseBannerMessage) XXX_DiscardUnknown() {
+	xxx_messageInfo_ResponseBannerMessage.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ResponseBannerMessage proto.InternalMessageInfo
+
+func (m *ResponseBannerMessage) GetResponse() *Response {
+	if m != nil {
+		return m.Response
+	}
+	return nil
+}
+
 type GetBannerRequestMessage struct {
 	Audience             *Audience `protobuf:"bytes,1,opt,name=audience,proto3" json:"audience,omitempty"`
 	Slot                 *Slot     `protobuf:"bytes,2,opt,name=slot,proto3" json:"slot,omitempty"`
@@ -193,7 +279,7 @@ func (m *GetBannerRequestMessage) Reset()         { *m = GetBannerRequestMessage
 func (m *GetBannerRequestMessage) String() string { return proto.CompactTextString(m) }
 func (*GetBannerRequestMessage) ProtoMessage()    {}
 func (*GetBannerRequestMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45b86f169d1f5a56, []int{4}
+	return fileDescriptor_45b86f169d1f5a56, []int{6}
 }
 
 func (m *GetBannerRequestMessage) XXX_Unmarshal(b []byte) error {
@@ -239,7 +325,7 @@ func (m *GetBannerResponseMessage) Reset()         { *m = GetBannerResponseMessa
 func (m *GetBannerResponseMessage) String() string { return proto.CompactTextString(m) }
 func (*GetBannerResponseMessage) ProtoMessage()    {}
 func (*GetBannerResponseMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45b86f169d1f5a56, []int{5}
+	return fileDescriptor_45b86f169d1f5a56, []int{7}
 }
 
 func (m *GetBannerResponseMessage) XXX_Unmarshal(b []byte) error {
@@ -267,37 +353,201 @@ func (m *GetBannerResponseMessage) GetBanner() *Banner {
 	return nil
 }
 
+type AddBannerToSlotRequestMessage struct {
+	Audience             *Audience `protobuf:"bytes,1,opt,name=audience,proto3" json:"audience,omitempty"`
+	Slot                 *Slot     `protobuf:"bytes,2,opt,name=slot,proto3" json:"slot,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
+	XXX_unrecognized     []byte    `json:"-"`
+	XXX_sizecache        int32     `json:"-"`
+}
+
+func (m *AddBannerToSlotRequestMessage) Reset()         { *m = AddBannerToSlotRequestMessage{} }
+func (m *AddBannerToSlotRequestMessage) String() string { return proto.CompactTextString(m) }
+func (*AddBannerToSlotRequestMessage) ProtoMessage()    {}
+func (*AddBannerToSlotRequestMessage) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45b86f169d1f5a56, []int{8}
+}
+
+func (m *AddBannerToSlotRequestMessage) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AddBannerToSlotRequestMessage.Unmarshal(m, b)
+}
+func (m *AddBannerToSlotRequestMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AddBannerToSlotRequestMessage.Marshal(b, m, deterministic)
+}
+func (m *AddBannerToSlotRequestMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AddBannerToSlotRequestMessage.Merge(m, src)
+}
+func (m *AddBannerToSlotRequestMessage) XXX_Size() int {
+	return xxx_messageInfo_AddBannerToSlotRequestMessage.Size(m)
+}
+func (m *AddBannerToSlotRequestMessage) XXX_DiscardUnknown() {
+	xxx_messageInfo_AddBannerToSlotRequestMessage.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AddBannerToSlotRequestMessage proto.InternalMessageInfo
+
+func (m *AddBannerToSlotRequestMessage) GetAudience() *Audience {
+	if m != nil {
+		return m.Audience
+	}
+	return nil
+}
+
+func (m *AddBannerToSlotRequestMessage) GetSlot() *Slot {
+	if m != nil {
+		return m.Slot
+	}
+	return nil
+}
+
+type DeleteBannerFromSlotRequestMessage struct {
+	Audience             *Audience `protobuf:"bytes,1,opt,name=audience,proto3" json:"audience,omitempty"`
+	Slot                 *Slot     `protobuf:"bytes,2,opt,name=slot,proto3" json:"slot,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
+	XXX_unrecognized     []byte    `json:"-"`
+	XXX_sizecache        int32     `json:"-"`
+}
+
+func (m *DeleteBannerFromSlotRequestMessage) Reset()         { *m = DeleteBannerFromSlotRequestMessage{} }
+func (m *DeleteBannerFromSlotRequestMessage) String() string { return proto.CompactTextString(m) }
+func (*DeleteBannerFromSlotRequestMessage) ProtoMessage()    {}
+func (*DeleteBannerFromSlotRequestMessage) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45b86f169d1f5a56, []int{9}
+}
+
+func (m *DeleteBannerFromSlotRequestMessage) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DeleteBannerFromSlotRequestMessage.Unmarshal(m, b)
+}
+func (m *DeleteBannerFromSlotRequestMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DeleteBannerFromSlotRequestMessage.Marshal(b, m, deterministic)
+}
+func (m *DeleteBannerFromSlotRequestMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeleteBannerFromSlotRequestMessage.Merge(m, src)
+}
+func (m *DeleteBannerFromSlotRequestMessage) XXX_Size() int {
+	return xxx_messageInfo_DeleteBannerFromSlotRequestMessage.Size(m)
+}
+func (m *DeleteBannerFromSlotRequestMessage) XXX_DiscardUnknown() {
+	xxx_messageInfo_DeleteBannerFromSlotRequestMessage.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DeleteBannerFromSlotRequestMessage proto.InternalMessageInfo
+
+func (m *DeleteBannerFromSlotRequestMessage) GetAudience() *Audience {
+	if m != nil {
+		return m.Audience
+	}
+	return nil
+}
+
+func (m *DeleteBannerFromSlotRequestMessage) GetSlot() *Slot {
+	if m != nil {
+		return m.Slot
+	}
+	return nil
+}
+
+type AddClickRequestMessage struct {
+	Banner               *Banner   `protobuf:"bytes,1,opt,name=banner,proto3" json:"banner,omitempty"`
+	Slot                 *Slot     `protobuf:"bytes,2,opt,name=slot,proto3" json:"slot,omitempty"`
+	Audience             *Audience `protobuf:"bytes,3,opt,name=audience,proto3" json:"audience,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
+	XXX_unrecognized     []byte    `json:"-"`
+	XXX_sizecache        int32     `json:"-"`
+}
+
+func (m *AddClickRequestMessage) Reset()         { *m = AddClickRequestMessage{} }
+func (m *AddClickRequestMessage) String() string { return proto.CompactTextString(m) }
+func (*AddClickRequestMessage) ProtoMessage()    {}
+func (*AddClickRequestMessage) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45b86f169d1f5a56, []int{10}
+}
+
+func (m *AddClickRequestMessage) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AddClickRequestMessage.Unmarshal(m, b)
+}
+func (m *AddClickRequestMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AddClickRequestMessage.Marshal(b, m, deterministic)
+}
+func (m *AddClickRequestMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AddClickRequestMessage.Merge(m, src)
+}
+func (m *AddClickRequestMessage) XXX_Size() int {
+	return xxx_messageInfo_AddClickRequestMessage.Size(m)
+}
+func (m *AddClickRequestMessage) XXX_DiscardUnknown() {
+	xxx_messageInfo_AddClickRequestMessage.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AddClickRequestMessage proto.InternalMessageInfo
+
+func (m *AddClickRequestMessage) GetBanner() *Banner {
+	if m != nil {
+		return m.Banner
+	}
+	return nil
+}
+
+func (m *AddClickRequestMessage) GetSlot() *Slot {
+	if m != nil {
+		return m.Slot
+	}
+	return nil
+}
+
+func (m *AddClickRequestMessage) GetAudience() *Audience {
+	if m != nil {
+		return m.Audience
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*Slot)(nil), "proto.Slot")
 	proto.RegisterType((*Audience)(nil), "proto.Audience")
 	proto.RegisterType((*Banner)(nil), "proto.Banner")
 	proto.RegisterType((*Date)(nil), "proto.Date")
+	proto.RegisterType((*Response)(nil), "proto.Response")
+	proto.RegisterType((*ResponseBannerMessage)(nil), "proto.ResponseBannerMessage")
 	proto.RegisterType((*GetBannerRequestMessage)(nil), "proto.GetBannerRequestMessage")
 	proto.RegisterType((*GetBannerResponseMessage)(nil), "proto.GetBannerResponseMessage")
+	proto.RegisterType((*AddBannerToSlotRequestMessage)(nil), "proto.AddBannerToSlotRequestMessage")
+	proto.RegisterType((*DeleteBannerFromSlotRequestMessage)(nil), "proto.DeleteBannerFromSlotRequestMessage")
+	proto.RegisterType((*AddClickRequestMessage)(nil), "proto.AddClickRequestMessage")
 }
 
 func init() { proto.RegisterFile("proto/banner.proto", fileDescriptor_45b86f169d1f5a56) }
 
 var fileDescriptor_45b86f169d1f5a56 = []byte{
-	// 280 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x74, 0x91, 0x41, 0x4b, 0xc3, 0x40,
-	0x10, 0x85, 0x69, 0x89, 0xb1, 0x4c, 0xa9, 0xc2, 0x1e, 0x6a, 0xc8, 0xc1, 0x48, 0x40, 0x10, 0x84,
-	0x0d, 0x54, 0xf0, 0xde, 0xaa, 0x78, 0xf2, 0x92, 0x7a, 0xd1, 0xdb, 0xa6, 0x3b, 0x86, 0x95, 0x74,
-	0x37, 0x66, 0x27, 0xfd, 0xfd, 0xe2, 0xee, 0xa6, 0x28, 0xc1, 0xd3, 0x30, 0x79, 0x2f, 0xef, 0x7d,
-	0x93, 0x00, 0x6b, 0x3b, 0x43, 0xa6, 0xa8, 0x84, 0xd6, 0xd8, 0x71, 0xb7, 0xb0, 0x13, 0x37, 0xd2,
-	0xac, 0x36, 0xa6, 0x6e, 0xb0, 0x70, 0x5b, 0xd5, 0x7f, 0x14, 0xa4, 0xf6, 0x68, 0x49, 0xec, 0x5b,
-	0xef, 0xcb, 0x97, 0x10, 0x6d, 0x1b, 0x43, 0xec, 0x0c, 0xa6, 0x4a, 0x26, 0x93, 0xab, 0xc9, 0x4d,
-	0x54, 0x4e, 0x95, 0xcc, 0x53, 0x98, 0xad, 0x7b, 0xa9, 0x50, 0xef, 0x70, 0xa4, 0x25, 0x10, 0x6f,
-	0x5c, 0xd7, 0x48, 0xb9, 0x87, 0xe8, 0x51, 0x10, 0x32, 0x0e, 0x91, 0x14, 0x84, 0x4e, 0x99, 0xaf,
-	0x52, 0xee, 0x29, 0xf8, 0x40, 0xc1, 0x5f, 0x07, 0x8a, 0xd2, 0xf9, 0xf2, 0x1a, 0x2e, 0x9e, 0x91,
-	0x7c, 0x68, 0x89, 0x5f, 0x3d, 0x5a, 0x7a, 0x41, 0x6b, 0x45, 0x8d, 0xec, 0x16, 0x66, 0x22, 0x80,
-	0x84, 0xb8, 0x73, 0x9f, 0xc3, 0x07, 0xbe, 0xf2, 0x68, 0x60, 0x19, 0x44, 0xb6, 0x31, 0x94, 0x4c,
-	0x9d, 0x71, 0x1e, 0x8c, 0x3f, 0x07, 0x96, 0x4e, 0xc8, 0xd7, 0x90, 0xfc, 0x2a, 0xb2, 0xad, 0xd1,
-	0x16, 0x87, 0xa6, 0x6b, 0x88, 0xfd, 0x27, 0x0c, 0x3d, 0x8b, 0xf0, 0x7a, 0x70, 0x07, 0x71, 0xf5,
-	0x09, 0x0b, 0xff, 0x64, 0x8b, 0xdd, 0x41, 0xed, 0x90, 0xbd, 0xc1, 0xd2, 0xa2, 0x96, 0x0f, 0x1d,
-	0x0a, 0xc2, 0xa7, 0x03, 0xea, 0x23, 0xfb, 0x65, 0x48, 0xf8, 0xe7, 0xb6, 0x34, 0x1b, 0xeb, 0x7f,
-	0x90, 0x36, 0xa7, 0xef, 0xfe, 0x3f, 0x56, 0xb1, 0x1b, 0x77, 0xdf, 0x01, 0x00, 0x00, 0xff, 0xff,
-	0xb7, 0xe7, 0xe6, 0x2a, 0xeb, 0x01, 0x00, 0x00,
+	// 436 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x54, 0x4d, 0xab, 0xd3, 0x40,
+	0x14, 0xa5, 0x7d, 0x31, 0xaf, 0xde, 0xf2, 0x14, 0x06, 0xad, 0x31, 0xf8, 0x8c, 0x0c, 0x0a, 0x8a,
+	0x90, 0x42, 0x05, 0x57, 0x6e, 0xf2, 0x2c, 0xba, 0x72, 0x33, 0x2d, 0x28, 0xae, 0x4c, 0x3b, 0xd7,
+	0x10, 0x4d, 0x32, 0x35, 0x33, 0xf1, 0x5f, 0x08, 0xfe, 0x64, 0xe9, 0x7c, 0xd4, 0x26, 0xad, 0x8d,
+	0x9b, 0xae, 0x86, 0x9b, 0x73, 0xe6, 0x9c, 0x33, 0xf7, 0x5e, 0x02, 0x64, 0x53, 0x0b, 0x25, 0xa6,
+	0xab, 0xb4, 0xaa, 0xb0, 0x8e, 0x75, 0x41, 0x6e, 0xe9, 0x23, 0x8c, 0x32, 0x21, 0xb2, 0x02, 0xa7,
+	0xba, 0x5a, 0x35, 0x5f, 0xa7, 0x2a, 0x2f, 0x51, 0xaa, 0xb4, 0xdc, 0x18, 0x1e, 0x9d, 0x80, 0xb7,
+	0x28, 0x84, 0x22, 0x77, 0x60, 0x98, 0xf3, 0x60, 0xf0, 0x64, 0xf0, 0xdc, 0x63, 0xc3, 0x9c, 0xd3,
+	0x10, 0x46, 0x49, 0xc3, 0x73, 0xac, 0xd6, 0x78, 0x80, 0x05, 0xe0, 0xdf, 0x68, 0xaf, 0x03, 0xe4,
+	0x35, 0x78, 0xf3, 0x54, 0x21, 0x89, 0xc1, 0xe3, 0xa9, 0x42, 0x8d, 0x8c, 0x67, 0x61, 0x6c, 0x52,
+	0xc4, 0x2e, 0x45, 0xbc, 0x74, 0x29, 0x98, 0xe6, 0xd1, 0x37, 0x30, 0x62, 0x28, 0x37, 0xa2, 0x92,
+	0x48, 0x26, 0xe0, 0xd7, 0x28, 0x9b, 0x42, 0xe9, 0xdb, 0xb7, 0x99, 0xad, 0x48, 0x00, 0x97, 0x25,
+	0x4a, 0x99, 0x66, 0x18, 0x0c, 0x35, 0xe0, 0x4a, 0x3a, 0x87, 0xfb, 0xee, 0xb6, 0xc9, 0xf5, 0xc1,
+	0x00, 0xe4, 0x25, 0x8c, 0x6a, 0x0b, 0xd8, 0x28, 0x77, 0x4d, 0x86, 0xd8, 0xf1, 0xd9, 0x8e, 0x40,
+	0x33, 0x78, 0xf0, 0x1e, 0x95, 0x11, 0x60, 0xf8, 0xa3, 0x41, 0xa9, 0xf6, 0x74, 0x52, 0xdb, 0x8c,
+	0x8e, 0x8e, 0xeb, 0x11, 0xdb, 0x11, 0x48, 0x04, 0x9e, 0x2c, 0x84, 0xd2, 0x21, 0xc7, 0xb3, 0xb1,
+	0x25, 0x6e, 0x9b, 0xcc, 0x34, 0x40, 0x13, 0x08, 0xf6, 0x8c, 0x8c, 0xbb, 0x73, 0x7a, 0x06, 0xbe,
+	0x19, 0xa3, 0xf5, 0xb9, 0xb2, 0xd7, 0x2d, 0xdb, 0x82, 0xb4, 0x84, 0xeb, 0x84, 0x73, 0xf3, 0x71,
+	0x29, 0xb4, 0xf6, 0x39, 0x13, 0xd7, 0x40, 0xe7, 0x58, 0xa0, 0xb2, 0xed, 0x7d, 0x57, 0x8b, 0xf2,
+	0xec, 0x9e, 0xbf, 0x06, 0x30, 0x49, 0x38, 0x7f, 0x5b, 0xe4, 0xeb, 0xef, 0x1d, 0xa3, 0xff, 0x6b,
+	0x52, 0xaf, 0x45, 0x2b, 0xf0, 0x45, 0x4f, 0xe0, 0xd9, 0xef, 0x0b, 0xb8, 0x32, 0x06, 0x0b, 0xac,
+	0x7f, 0xe6, 0x6b, 0x24, 0x1f, 0xe1, 0x9e, 0xc4, 0x8a, 0xef, 0x66, 0xe9, 0xe2, 0x3d, 0xb6, 0x22,
+	0xff, 0xd8, 0xa6, 0x30, 0x3a, 0xc4, 0xdb, 0x4b, 0xf0, 0x05, 0xc2, 0xad, 0x70, 0x67, 0xc2, 0x0e,
+	0x7d, 0xea, 0x32, 0x9e, 0x5a, 0x80, 0xf0, 0x51, 0x67, 0xd1, 0xdb, 0x11, 0xbf, 0x41, 0xb4, 0x75,
+	0x38, 0x36, 0x54, 0x47, 0x79, 0x61, 0x05, 0xfa, 0x07, 0xdf, 0xe3, 0xf5, 0x09, 0x1e, 0xda, 0xd7,
+	0xe8, 0x59, 0xb6, 0xc1, 0xeb, 0xbf, 0x8f, 0x39, 0x32, 0xe9, 0xd3, 0xca, 0x37, 0x97, 0x9f, 0xcd,
+	0x5f, 0x6e, 0xe5, 0xeb, 0xe3, 0xd5, 0x9f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x7f, 0xb5, 0x8b, 0x56,
+	0x09, 0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -312,7 +562,10 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type BannerServiceClient interface {
-	SendCreateEventMessage(ctx context.Context, in *GetBannerRequestMessage, opts ...grpc.CallOption) (*GetBannerResponseMessage, error)
+	SendGetBannerMessage(ctx context.Context, in *GetBannerRequestMessage, opts ...grpc.CallOption) (*GetBannerResponseMessage, error)
+	SendAddBannerToSlotMessage(ctx context.Context, in *AddBannerToSlotRequestMessage, opts ...grpc.CallOption) (*ResponseBannerMessage, error)
+	SendDeleteBannerFromSlotMessage(ctx context.Context, in *DeleteBannerFromSlotRequestMessage, opts ...grpc.CallOption) (*ResponseBannerMessage, error)
+	SendAddClickBannerMessage(ctx context.Context, in *AddClickRequestMessage, opts ...grpc.CallOption) (*ResponseBannerMessage, error)
 }
 
 type bannerServiceClient struct {
@@ -323,9 +576,36 @@ func NewBannerServiceClient(cc *grpc.ClientConn) BannerServiceClient {
 	return &bannerServiceClient{cc}
 }
 
-func (c *bannerServiceClient) SendCreateEventMessage(ctx context.Context, in *GetBannerRequestMessage, opts ...grpc.CallOption) (*GetBannerResponseMessage, error) {
+func (c *bannerServiceClient) SendGetBannerMessage(ctx context.Context, in *GetBannerRequestMessage, opts ...grpc.CallOption) (*GetBannerResponseMessage, error) {
 	out := new(GetBannerResponseMessage)
-	err := c.cc.Invoke(ctx, "/proto.BannerService/sendCreateEventMessage", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.BannerService/sendGetBannerMessage", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *bannerServiceClient) SendAddBannerToSlotMessage(ctx context.Context, in *AddBannerToSlotRequestMessage, opts ...grpc.CallOption) (*ResponseBannerMessage, error) {
+	out := new(ResponseBannerMessage)
+	err := c.cc.Invoke(ctx, "/proto.BannerService/sendAddBannerToSlotMessage", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *bannerServiceClient) SendDeleteBannerFromSlotMessage(ctx context.Context, in *DeleteBannerFromSlotRequestMessage, opts ...grpc.CallOption) (*ResponseBannerMessage, error) {
+	out := new(ResponseBannerMessage)
+	err := c.cc.Invoke(ctx, "/proto.BannerService/sendDeleteBannerFromSlotMessage", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *bannerServiceClient) SendAddClickBannerMessage(ctx context.Context, in *AddClickRequestMessage, opts ...grpc.CallOption) (*ResponseBannerMessage, error) {
+	out := new(ResponseBannerMessage)
+	err := c.cc.Invoke(ctx, "/proto.BannerService/sendAddClickBannerMessage", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -334,35 +614,101 @@ func (c *bannerServiceClient) SendCreateEventMessage(ctx context.Context, in *Ge
 
 // BannerServiceServer is the server API for BannerService service.
 type BannerServiceServer interface {
-	SendCreateEventMessage(context.Context, *GetBannerRequestMessage) (*GetBannerResponseMessage, error)
+	SendGetBannerMessage(context.Context, *GetBannerRequestMessage) (*GetBannerResponseMessage, error)
+	SendAddBannerToSlotMessage(context.Context, *AddBannerToSlotRequestMessage) (*ResponseBannerMessage, error)
+	SendDeleteBannerFromSlotMessage(context.Context, *DeleteBannerFromSlotRequestMessage) (*ResponseBannerMessage, error)
+	SendAddClickBannerMessage(context.Context, *AddClickRequestMessage) (*ResponseBannerMessage, error)
 }
 
 // UnimplementedBannerServiceServer can be embedded to have forward compatible implementations.
 type UnimplementedBannerServiceServer struct {
 }
 
-func (*UnimplementedBannerServiceServer) SendCreateEventMessage(ctx context.Context, req *GetBannerRequestMessage) (*GetBannerResponseMessage, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SendCreateEventMessage not implemented")
+func (*UnimplementedBannerServiceServer) SendGetBannerMessage(ctx context.Context, req *GetBannerRequestMessage) (*GetBannerResponseMessage, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendGetBannerMessage not implemented")
+}
+func (*UnimplementedBannerServiceServer) SendAddBannerToSlotMessage(ctx context.Context, req *AddBannerToSlotRequestMessage) (*ResponseBannerMessage, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendAddBannerToSlotMessage not implemented")
+}
+func (*UnimplementedBannerServiceServer) SendDeleteBannerFromSlotMessage(ctx context.Context, req *DeleteBannerFromSlotRequestMessage) (*ResponseBannerMessage, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendDeleteBannerFromSlotMessage not implemented")
+}
+func (*UnimplementedBannerServiceServer) SendAddClickBannerMessage(ctx context.Context, req *AddClickRequestMessage) (*ResponseBannerMessage, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendAddClickBannerMessage not implemented")
 }
 
 func RegisterBannerServiceServer(s *grpc.Server, srv BannerServiceServer) {
 	s.RegisterService(&_BannerService_serviceDesc, srv)
 }
 
-func _BannerService_SendCreateEventMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _BannerService_SendGetBannerMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetBannerRequestMessage)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BannerServiceServer).SendCreateEventMessage(ctx, in)
+		return srv.(BannerServiceServer).SendGetBannerMessage(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.BannerService/SendCreateEventMessage",
+		FullMethod: "/proto.BannerService/SendGetBannerMessage",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BannerServiceServer).SendCreateEventMessage(ctx, req.(*GetBannerRequestMessage))
+		return srv.(BannerServiceServer).SendGetBannerMessage(ctx, req.(*GetBannerRequestMessage))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BannerService_SendAddBannerToSlotMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddBannerToSlotRequestMessage)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BannerServiceServer).SendAddBannerToSlotMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.BannerService/SendAddBannerToSlotMessage",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BannerServiceServer).SendAddBannerToSlotMessage(ctx, req.(*AddBannerToSlotRequestMessage))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BannerService_SendDeleteBannerFromSlotMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteBannerFromSlotRequestMessage)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BannerServiceServer).SendDeleteBannerFromSlotMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.BannerService/SendDeleteBannerFromSlotMessage",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BannerServiceServer).SendDeleteBannerFromSlotMessage(ctx, req.(*DeleteBannerFromSlotRequestMessage))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BannerService_SendAddClickBannerMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddClickRequestMessage)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BannerServiceServer).SendAddClickBannerMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.BannerService/SendAddClickBannerMessage",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BannerServiceServer).SendAddClickBannerMessage(ctx, req.(*AddClickRequestMessage))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -372,8 +718,20 @@ var _BannerService_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*BannerServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "sendCreateEventMessage",
-			Handler:    _BannerService_SendCreateEventMessage_Handler,
+			MethodName: "sendGetBannerMessage",
+			Handler:    _BannerService_SendGetBannerMessage_Handler,
+		},
+		{
+			MethodName: "sendAddBannerToSlotMessage",
+			Handler:    _BannerService_SendAddBannerToSlotMessage_Handler,
+		},
+		{
+			MethodName: "sendDeleteBannerFromSlotMessage",
+			Handler:    _BannerService_SendDeleteBannerFromSlotMessage_Handler,
+		},
+		{
+			MethodName: "sendAddClickBannerMessage",
+			Handler:    _BannerService_SendAddClickBannerMessage_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

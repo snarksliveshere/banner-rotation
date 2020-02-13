@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/snarksliveshere/banner-rotation/cmd/grpc"
 	"github.com/snarksliveshere/banner-rotation/task"
 	"log"
 
@@ -18,7 +19,7 @@ func failOnError(err error, msg string) {
 func main() {
 	var conf configs.AppConfig
 	failOnError(envconfig.Process("reg_service", &conf), "failed to init config")
-	dbInst := configs.DB{Conf: &conf}
-	db := dbInst.CreatePgConn()
+
+	grpc.Server(conf)
 	task.Run(db)
 }

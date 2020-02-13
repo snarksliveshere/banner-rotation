@@ -7,7 +7,10 @@ option go_package = "proto";
 import "google/protobuf/timestamp.proto";
 
 service BannerService {
-    rpc sendCreateEventMessage (GetBannerRequestMessage) returns (GetBannerResponseMessage);
+    rpc sendGetBannerMessage (GetBannerRequestMessage) returns (GetBannerResponseMessage);
+    rpc sendAddBannerToSlotMessage (AddBannerToSlotRequestMessage) returns (ResponseBannerMessage);
+    rpc sendDeleteBannerFromSlotMessage (DeleteBannerFromSlotRequestMessage) returns (ResponseBannerMessage);
+    rpc sendAddClickBannerMessage (AddClickRequestMessage) returns (ResponseBannerMessage);
 }
 
 message Slot {
@@ -26,6 +29,15 @@ message Date {
     google.protobuf.Timestamp date = 1;
 }
 
+message Response {
+    string result = 1;
+    string message = 2;
+}
+
+message ResponseBannerMessage {
+    Response response = 1;
+}
+
 
 message GetBannerRequestMessage {
     Audience audience = 1;
@@ -34,4 +46,20 @@ message GetBannerRequestMessage {
 
 message GetBannerResponseMessage {
     Banner banner = 1;
+}
+
+message AddBannerToSlotRequestMessage {
+    Audience audience = 1;
+    Slot slot = 2;
+}
+
+message DeleteBannerFromSlotRequestMessage {
+    Audience audience = 1;
+    Slot slot = 2;
+}
+
+message AddClickRequestMessage {
+    Banner banner = 1;
+    Slot slot = 2;
+    Audience audience = 3;
 }
