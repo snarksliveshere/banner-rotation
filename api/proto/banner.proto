@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "proto";
+
+import "google/protobuf/timestamp.proto";
+
+service BannerService {
+    rpc sendCreateEventMessage (GetBannerRequestMessage) returns (GetBannerResponseMessage);
+}
+
+message Slot {
+    uint64 id = 1;
+}
+
+message Audience {
+    uint64 id = 1;
+}
+
+message Banner {
+    uint64 id = 1;
+}
+
+message Date {
+    google.protobuf.Timestamp date = 1;
+}
+
+
+message GetBannerRequestMessage {
+    Audience audience = 1;
+    Slot slot = 2;
+}
+
+message GetBannerResponseMessage {
+    Banner banner = 1;
+}
