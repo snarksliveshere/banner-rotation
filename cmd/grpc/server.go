@@ -1,12 +1,10 @@
 package grpc
 
 import (
-	"context"
-	"fmt"
 	"github.com/go-pg/pg"
 	"github.com/snarksliveshere/banner-rotation/api/proto"
 	"github.com/snarksliveshere/banner-rotation/configs"
-	"github.com/snarksliveshere/otus_golang/hw_17_monitoring/server/config"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"net"
 	"os"
@@ -15,21 +13,18 @@ import (
 )
 
 type ServerBanner struct {
-	db *pg.DB
+	db  *pg.DB
+	log *zap.SugaredLogger
 }
 
-var (
-	log *logrus.Logger
-)
-
-func Server(conf configs.AppConfig) {
+func Server(conf configs.AppConfig, log *zap.SugaredLogger) {
 	stopCh := make(chan os.Signal, 1)
 	signal.Notify(stopCh, syscall.SIGINT, syscall.SIGTERM)
-	goGRPC(conf)
+	goGRPC(conf, log)
 	<-stopCh
 }
 
-func goGRPC(conf configs.AppConfig) {
+func goGRPC(conf configs.AppConfig, log *zap.SugaredLogger) {
 	listenAddr := conf.ListenIP + ":" + conf.GRPCPort
 	listen, err := net.Listen("tcp", listenAddr)
 	if err != nil {
@@ -39,12 +34,15 @@ func goGRPC(conf configs.AppConfig) {
 	grpcServer := grpc.NewServer()
 
 	dbInst := configs.DB{Conf: &conf}
-	serverBanner := ServerBanner{db: dbInst.CreatePgConn()}
+	serverBanner := ServerBanner{
+		db:  dbInst.CreatePgConn(),
+		log: log,
+	}
 	proto.RegisterBannerServiceServer(grpcServer, serverBanner)
 
 	err = grpcServer.Serve(listen)
 	if err != nil {
-		fmt.Println(err.Error())
+		log.DPanic(err.Error())
 	}
 
 	log.Infof("Run grpc server on: %s\n", listenAddr)
