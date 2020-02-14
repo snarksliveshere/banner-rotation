@@ -2,7 +2,7 @@ package grpc
 
 import (
 	"context"
-	"github.com/snarksliveshere/banner-rotation/api/proto"
+	"github.com/snarksliveshere/banner-rotation/server/api/proto"
 )
 
 //type Response struct {
@@ -14,8 +14,10 @@ import (
 //	//Result     []string      `json:"result,omitempty"`
 //}
 
-func (s ServerBanner) SendGetBannerMessage(context.Context, *proto.GetBannerRequestMessage) (*proto.GetBannerResponseMessage, error) {
-	panic("implement me")
+func (s ServerBanner) SendGetBannerMessage(ctx context.Context, msg *proto.GetBannerRequestMessage) (*proto.GetBannerResponseMessage, error) {
+	s.log.Info(msg.Audience.Id, msg.Slot.Id)
+	return nil, nil
+	//panic("implement me")
 }
 
 func (s ServerBanner) SendAddBannerToSlotMessage(context.Context, *proto.AddBannerToSlotRequestMessage) (*proto.ResponseBannerMessage, error) {

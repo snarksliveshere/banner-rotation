@@ -30,7 +30,7 @@ message Date {
 }
 
 message Response {
-    string result = 1;
+    string status = 1;
     string message = 2;
 }
 

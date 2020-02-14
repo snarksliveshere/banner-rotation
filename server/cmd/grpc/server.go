@@ -2,8 +2,8 @@ package grpc
 
 import (
 	"github.com/go-pg/pg"
-	"github.com/snarksliveshere/banner-rotation/api/proto"
-	"github.com/snarksliveshere/banner-rotation/configs"
+	"github.com/snarksliveshere/banner-rotation/server/api/proto"
+	"github.com/snarksliveshere/banner-rotation/server/configs"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"net"

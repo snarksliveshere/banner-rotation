@@ -2,7 +2,7 @@ package task
 
 import (
 	"github.com/go-pg/pg"
-	"github.com/snarksliveshere/banner-rotation/models"
+	"github.com/snarksliveshere/banner-rotation/server/internal/database/models"
 	"log"
 )
 

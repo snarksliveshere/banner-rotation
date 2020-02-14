@@ -8,11 +8,11 @@ networks:
         - subnet: 163.30.99.0/24
 
 services:
-  manager-postgres:
+  server-postgres:
     image: postgres:11.3-alpine
-    container_name: dbpg
+    container_name: db_server
     volumes:
-      - ./setup.sql:/docker-entrypoint-initdb.d/setup.sql
+      - ./init/setup_server.sql:/docker-entrypoint-initdb.d/setup.sql
     environment:
       POSTGRES_USER: md
       POSTGRES_PASSWORD: secret
@@ -22,6 +22,21 @@ services:
     networks:
       apinet:
         ipv4_address: 163.30.99.51
+
+  client-postgres:
+    image: postgres:11.3-alpine
+    container_name: db_client
+    volumes:
+      - ./init/setup_client.sql:/docker-entrypoint-initdb.d/setup.sql
+    environment:
+      POSTGRES_USER: md
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: banner_client
+    ports:
+      - "54223:5432"
+    networks:
+      apinet:
+        ipv4_address: 163.30.99.52
 #
 #  rabbit:
 #    image: "rabbitmq:3-management"
@@ -36,24 +51,25 @@ services:
 #      apinet:
 #        ipv4_address: 162.30.99.53
 #
-  test_server:
-    build:
-      context: ./
-      dockerfile: Dockerfile
-    container_name: test
-    restart: on-failure
-    depends_on:
-      - manager-postgres
-    environment:
-      REG_SERVICE_DB_USER: md
-      REG_SERVICE_DB_PASSWORD: secret
-      REG_SERVICE_DB_NAME: banner_rotation
-      REG_SERVICE_DB_HOST: dbpg
-      REG_SERVICE_DB_PORT: 5432
-      REG_SERVICE_LOG_LEVEL: info
-    networks:
-      apinet:
-        ipv4_address: 163.30.99.52
+#  test_server:
+#    build:
+#      context: ./
+#      dockerfile: Dockerfile
+#    container_name: test
+#    restart: on-failure
+#    depends_on:
+#      - manager-postgres
+#      - client-postgres
+#    environment:
+#      REG_SERVICE_DB_USER: md
+#      REG_SERVICE_DB_PASSWORD: secret
+#      REG_SERVICE_DB_NAME: banner_rotation
+#      REG_SERVICE_DB_HOST: dbpg
+#      REG_SERVICE_DB_PORT: 5432
+#      REG_SERVICE_LOG_LEVEL: info
+#    networks:
+#      apinet:
+#        ipv4_address: 163.30.99.52
 #
 #  scheduler:
 #    build: ./scheduler

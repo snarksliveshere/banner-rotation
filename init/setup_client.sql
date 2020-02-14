@@ -27,17 +27,6 @@ CREATE TABLE audience2banner
     CONSTRAINT public_audience2banner_audience_banner_uidx UNIQUE (audience_fk, banner_fk)
 );
 
-CREATE TABLE statistics
-(
-    id          BIGSERIAL PRIMARY KEY,
-    audience_fk BIGINT           NOT NULL,
-    banner_fk   BIGINT           NOT NULL,
-    slot_fk     BIGINT           NOT NULL,
-    shows       BIGINT DEFAULT 0 NOT NULL,
-    clicks      BIGINT DEFAULT 0 NOT NULL,
-    CONSTRAINT public_statistics__uidx UNIQUE (audience_fk, banner_fk, slot_fk)
-);
-
 CREATE TABLE banner2slot
 (
     id        BIGSERIAL PRIMARY KEY,
@@ -153,3 +142,15 @@ VALUES ((SELECT id FROM audience WHERE audience_id = 'male_adult'),
        ((SELECT id FROM audience WHERE audience_id = 'female_kid'),
         (SELECT id FROM banner WHERE banner_id = 'some_female3_kid_app_id'))
 ;
+
+
+CREATE TABLE statistics
+(
+    id          BIGSERIAL PRIMARY KEY,
+    audience_fk BIGINT           NOT NULL,
+    banner_fk   BIGINT           NOT NULL,
+    slot_fk     BIGINT           NOT NULL,
+    shows       BIGINT DEFAULT 0 NOT NULL,
+    clicks      BIGINT DEFAULT 0 NOT NULL,
+    CONSTRAINT public_statistics__uidx UNIQUE (audience_fk, banner_fk, slot_fk)
+);
