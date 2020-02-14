@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"github.com/go-pg/pg"
 	"github.com/snarksliveshere/banner-rotation/server/internal/database/models"
+	"go.uber.org/zap"
 	"log"
 )
 
 type Banner struct {
-	Id     int
+	Id     string
 	Trials int
 	Reward int
 }
@@ -32,8 +33,14 @@ type Percentage struct {
 	end   int
 }
 
+func ReturnBanner(db *pg.DB, slog *zap.SugaredLogger, audience, slot string) (string, error) {
+	banners := getBannerStat(db, audience, slot)
+	fmt.Println(banners)
+	return "", nil
+}
+
 func Run(db *pg.DB) {
-	banners := getBannerStat(db)
+	banners := getBannerStat(db, "", "")
 	for i := 0; i < 100000; i++ {
 		bId, err := getBanner(&banners)
 		if err != nil {
@@ -48,9 +55,9 @@ func Run(db *pg.DB) {
 	var statRows []*models.Statistics
 	for _, v := range banners.Banners {
 		row := models.Statistics{
-			AudienceFK: 2,
-			BannerFK:   uint64(v.Id),
-			SlotFK:     2,
+			AudienceId: "2",
+			BannerId:   v.Id,
+			SlotId:     "2",
 			Clicks:     uint64(v.Reward),
 			Shows:      uint64(v.Trials),
 		}

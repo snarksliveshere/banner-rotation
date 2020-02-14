@@ -6,20 +6,26 @@ import (
 	"log"
 )
 
-func getBannerStat(db *pg.DB) Banners {
+func getBannerStat(db *pg.DB, audience, slot string) Banners {
 	var loadedRows []*models.Statistics
 	_ = `SELECT DISTINCT statistics.clicks, statistics.shows, statistics.banner_fk
 				FROM statistics
 				RIGHT JOIN audience2banner a2b ON statistics.audience_fk = a2b.audience_fk
 				WHERE a2b.audience_fk = ?
 ;`
-	query := `SELECT banner.id AS banner_fk, shows, clicks FROM banner
-		JOIN audience2banner a2b ON banner.id = a2b.banner_fk
-		JOIN banner2slot b2s ON a2b.banner_fk = b2s.banner_fk
-		LEFT JOIN statistics s ON banner.id = s.banner_fk
-		WHERE a2b.audience_fk = 2
-		AND b2s.slot_fk = 2`
-	_, err := db.Query(&loadedRows, query)
+	query := `SELECT banner.banner_id AS banner_id, a.audience_id, sl.slot_id,  shows, clicks
+			FROM banner
+				 JOIN audience2banner a2b ON banner.id = a2b.banner_fk
+				 JOIN audience a ON a2b.audience_fk = a.id
+				 JOIN banner2slot b2s ON a2b.banner_fk = b2s.banner_fk
+				 JOIN slot sl ON sl.id = b2s.slot_fk
+				 LEFT JOIN statistics s ON banner.banner_id = s.banner_id
+			WHERE a.audience_id = ?
+  			AND sl.slot_id = ?;`
+
+	//WHERE a.audience_id = 'female_kid'
+	//AND sl.slot_id = 'bottom_slot_id';`
+	_, err := db.Query(&loadedRows, query, audience, slot)
 
 	if err != nil {
 		log.Fatal(err)
@@ -29,7 +35,7 @@ func getBannerStat(db *pg.DB) Banners {
 	for _, v := range loadedRows {
 		count = count + int(v.Clicks)
 		b := Banner{
-			Id:     int(v.BannerFK),
+			Id:     v.BannerId,
 			Trials: int(v.Shows),
 			Reward: int(v.Clicks),
 		}

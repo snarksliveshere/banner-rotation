@@ -7,12 +7,12 @@ import (
 	"time"
 )
 
-func getBanner(banners *Banners) (int, error) {
+func getBanner(banners *Banners) (string, error) {
 	if len(banners.Banners) == 0 {
-		return 0, errors.New("no banners")
+		return "", errors.New("no banners")
 	}
 	var rs float64
-	var bId int
+	var bId string
 	for _, v := range banners.Banners {
 		if v.Trials == 0 {
 			// Баннер еще не ротировался, даем ему сразу шанс (инициализация)
@@ -30,7 +30,7 @@ func getBanner(banners *Banners) (int, error) {
 	return bId, nil
 }
 
-func incBannerStatistics(banners *Banners, id int, rew bool) {
+func incBannerStatistics(banners *Banners, id string, rew bool) {
 	for k, v := range banners.Banners {
 		if v.Id == id {
 			tr := v.Trials + 1
