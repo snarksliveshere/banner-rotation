@@ -34,13 +34,18 @@ type Percentage struct {
 }
 
 func ReturnBanner(db *pg.DB, slog *zap.SugaredLogger, audience, slot string) (string, error) {
-	banners := getBannerStat(db, audience, slot)
-	fmt.Println(banners)
-	return "", nil
+	banners, err := getBannerStat(db, audience, slot)
+	if err != nil {
+		return "", err
+	}
+
+	bId, err := getBanner(&banners)
+	fmt.Println(bId)
+	return bId, nil
 }
 
 func Run(db *pg.DB) {
-	banners := getBannerStat(db, "", "")
+	banners, _ := getBannerStat(db, "", "")
 	for i := 0; i < 100000; i++ {
 		bId, err := getBanner(&banners)
 		if err != nil {

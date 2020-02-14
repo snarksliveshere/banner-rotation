@@ -47,16 +47,24 @@ func Client(conf configs.AppConfig, log *zap.SugaredLogger) {
 		Audience: &proto.Audience{Id: "male_adult"},
 		Slot:     &proto.Slot{Id: "top_slot_id"},
 	}
-	grpcConn.GetBanner(msg)
+	reply, err := grpcConn.GetBanner(msg)
+	if err != nil {
+		log.Info(err.Error())
+	}
+	if reply == nil {
+		log.Errorf("nil resp from GetBanner with audience:%v,slot:%v", msg.Audience.Id, msg.Slot.Id)
+	}
+	log.Info("banner ID:", reply.Banner.Id)
+
 	defer func() { _ = grpcConn.GConn.Close() }()
 }
 
-func (g *GRPCConn) GetBanner(msg proto.GetBannerRequestMessage) *proto.GetBannerResponseMessage {
+func (g *GRPCConn) GetBanner(msg proto.GetBannerRequestMessage) (*proto.GetBannerResponseMessage, error) {
 	resp, err := g.Client.SendGetBannerMessage(g.Ctx, &msg)
 	if err != nil {
-		g.log.DPanic(err.Error())
+		return nil, err
 	}
-	return resp
+	return resp, nil
 }
 
 //protoc ./proto/events.proto --go_out=plugins=grpc:.

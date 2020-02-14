@@ -4,6 +4,8 @@ import (
 	"context"
 	"github.com/snarksliveshere/banner-rotation/server/api/proto"
 	"github.com/snarksliveshere/banner-rotation/server/internal/task"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 //type Response struct {
@@ -16,13 +18,12 @@ import (
 //}
 
 func (s ServerBanner) SendGetBannerMessage(ctx context.Context, msg *proto.GetBannerRequestMessage) (*proto.GetBannerResponseMessage, error) {
-	s.log.Info(msg.Audience.Id, msg.Slot.Id)
-	task.ReturnBanner(s.db, s.log, msg.Audience.Id, msg.Slot.Id)
-	//if err != nil {
-	//	return nil, status.Error(codes.Aborted, err.Error())
-	//}
-	return nil, nil
-	//panic("implement me")
+	banner, err := task.ReturnBanner(s.db, s.log, msg.Audience.Id, msg.Slot.Id)
+	if err != nil {
+		return nil, status.Error(codes.Aborted, err.Error())
+	}
+	reply := proto.GetBannerResponseMessage{Banner: &proto.Banner{Id: banner}}
+	return &reply, nil
 }
 
 func (s ServerBanner) SendAddBannerToSlotMessage(context.Context, *proto.AddBannerToSlotRequestMessage) (*proto.ResponseBannerMessage, error) {

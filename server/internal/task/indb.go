@@ -6,13 +6,8 @@ import (
 	"log"
 )
 
-func getBannerStat(db *pg.DB, audience, slot string) Banners {
+func getBannerStat(db *pg.DB, audience, slot string) (Banners, error) {
 	var loadedRows []*models.Statistics
-	_ = `SELECT DISTINCT statistics.clicks, statistics.shows, statistics.banner_fk
-				FROM statistics
-				RIGHT JOIN audience2banner a2b ON statistics.audience_fk = a2b.audience_fk
-				WHERE a2b.audience_fk = ?
-;`
 	query := `SELECT banner.banner_id AS banner_id, a.audience_id, sl.slot_id,  shows, clicks
 			FROM banner
 				 JOIN audience2banner a2b ON banner.id = a2b.banner_fk
@@ -23,12 +18,10 @@ func getBannerStat(db *pg.DB, audience, slot string) Banners {
 			WHERE a.audience_id = ?
   			AND sl.slot_id = ?;`
 
-	//WHERE a.audience_id = 'female_kid'
-	//AND sl.slot_id = 'bottom_slot_id';`
 	_, err := db.Query(&loadedRows, query, audience, slot)
 
 	if err != nil {
-		log.Fatal(err)
+		return Banners{}, err
 	}
 	var bsInit []Banner
 	var count int
@@ -41,7 +34,7 @@ func getBannerStat(db *pg.DB, audience, slot string) Banners {
 		}
 		bsInit = append(bsInit, b)
 	}
-	return Banners{Count: count, Banners: bsInit}
+	return Banners{Count: count, Banners: bsInit}, nil
 }
 
 func insertIntoStat(db *pg.DB, loadedRows []*models.Statistics) {
