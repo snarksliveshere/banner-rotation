@@ -1,17 +1,16 @@
 package task
 
 import (
-	"fmt"
 	"github.com/go-pg/pg"
+	"github.com/snarksliveshere/banner-rotation/server/internal/database"
 	"github.com/snarksliveshere/banner-rotation/server/internal/database/models"
 	"go.uber.org/zap"
-	"log"
 )
 
 type Banner struct {
 	Id     string
-	Trials int
-	Reward int
+	Shows  int
+	Clicks int
 }
 
 type BannerStat struct {
@@ -34,43 +33,59 @@ type Percentage struct {
 }
 
 func ReturnBanner(db *pg.DB, slog *zap.SugaredLogger, audience, slot string) (string, error) {
-	banners, err := getBannerStat(db, audience, slot)
+	bannersRows, err := database.GetBannerStat(db, audience, slot)
 	if err != nil {
 		return "", err
 	}
+	banners, err := getBanners(bannersRows)
+	if err != nil {
+		return "", err
+	}
+	banner, err := getBanner(&banners)
+	if err != nil {
+		return "", err
+	}
+	row := &models.Statistics{
+		AudienceId: audience,
+		BannerId:   banner.Id,
+		SlotId:     slot,
+		Clicks:     uint64(banner.Clicks),
+		Shows:      uint64(banner.Shows) + 1,
+	}
+	go database.InsertRowIntoStat(db, slog, row)
+	return banner.Id, nil
+}
+func insertBannerStatToDB(db *pg.DB, slog *zap.SugaredLogger, banner, audience, slot string) {
 
-	bId, err := getBanner(&banners)
-	fmt.Println(bId)
-	return bId, nil
 }
 
-func Run(db *pg.DB) {
-	banners, _ := getBannerStat(db, "", "")
-	for i := 0; i < 100000; i++ {
-		bId, err := getBanner(&banners)
-		if err != nil {
-			log.Fatal(err)
-		}
-		var rew bool
-		if randomClick() {
-			rew = true
-		}
-		incBannerStatistics(&banners, bId, rew)
-	}
-	var statRows []*models.Statistics
-	for _, v := range banners.Banners {
-		row := models.Statistics{
-			AudienceId: "2",
-			BannerId:   v.Id,
-			SlotId:     "2",
-			Clicks:     uint64(v.Reward),
-			Shows:      uint64(v.Trials),
-		}
-		statRows = append(statRows, &row)
-	}
-	insertIntoStat(db, statRows)
-	fmt.Println("finish")
-}
+//func Run(db *pg.DB) {
+//	banners, _ := getBannerStat(db, "", "")
+//	for i := 0; i < 100000; i++ {
+//		bId, err := getBanner(&banners)
+//		if err != nil {
+//			log.Fatal(err)
+//		}
+//		var rew bool
+//		if randomClick() {
+//			rew = true
+//		}
+//		incBannerStatistics(&banners, bId.Id, rew)
+//	}
+//	var statRows []*models.Statistics
+//	for _, v := range banners.Banners {
+//		row := models.Statistics{
+//			AudienceId: "2",
+//			BannerId:   v.Id,
+//			SlotId:     "2",
+//			Clicks:     uint64(v.Clicks),
+//			Shows:      uint64(v.Shows),
+//		}
+//		statRows = append(statRows, &row)
+//	}
+//	insertIntoStat(db, statRows)
+//	fmt.Println("finish")
+//}
 
 //
 //func getTestRes() []float64 {

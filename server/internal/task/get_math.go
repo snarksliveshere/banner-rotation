@@ -7,41 +7,41 @@ import (
 	"time"
 )
 
-func getBanner(banners *Banners) (string, error) {
+func getBanner(banners *Banners) (Banner, error) {
 	if len(banners.Banners) == 0 {
-		return "", errors.New("no banners")
+		return Banner{}, errors.New("no banners")
 	}
 	var rs float64
-	var bId string
+	var banner Banner
 	for _, v := range banners.Banners {
-		if v.Trials == 0 {
+		if v.Shows == 0 {
 			// Баннер еще не ротировался, даем ему сразу шанс (инициализация)
-			bId = v.Id
+			banner = v
 			break
 		}
-		profit := float64(v.Reward) / float64(v.Trials)
-		res := profit + math.Sqrt(math.Log(float64(banners.Count))/float64(v.Trials))
+		profit := float64(v.Clicks) / float64(v.Shows)
+		res := profit + math.Sqrt(math.Log(float64(banners.Count))/float64(v.Shows))
 		if res > rs {
-			bId = v.Id
+			banner = v
 			rs = res
 		}
 	}
 
-	return bId, nil
+	return banner, nil
 }
 
 func incBannerStatistics(banners *Banners, id string, rew bool) {
 	for k, v := range banners.Banners {
 		if v.Id == id {
-			tr := v.Trials + 1
+			tr := v.Shows + 1
 			b := Banner{
 				Id:     v.Id,
-				Trials: tr,
-				Reward: v.Reward,
+				Shows:  tr,
+				Clicks: v.Clicks,
 			}
 			if rew {
-				r := v.Reward + 1
-				b.Reward = r
+				r := v.Clicks + 1
+				b.Clicks = r
 			}
 			banners.Banners[k] = b
 		}
