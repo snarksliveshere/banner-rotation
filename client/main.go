@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/kelseyhightower/envconfig"
-	"github.com/snarksliveshere/banner-rotation/server/cmd/grpc"
-	"github.com/snarksliveshere/banner-rotation/server/configs"
+	"github.com/snarksliveshere/banner-rotation/client/cmd/grpc"
+	"github.com/snarksliveshere/banner-rotation/client/configs"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"log"
@@ -19,7 +19,7 @@ func main() {
 	var conf configs.AppConfig
 	failOnError(envconfig.Process("reg_service", &conf), "failed to init config")
 
-	grpc.Server(conf, loggerInit())
+	grpc.Client(conf, loggerInit())
 	//task.Run(db)
 }
 
@@ -37,7 +37,7 @@ func loggerInit() *zap.SugaredLogger {
 	//	"attempt", 3,
 	//	"backoff", time.Second,
 	//)
-	slog.Info("GRPC Server Starts")
+	slog.Info("Start...")
 	return slog
 }
 
