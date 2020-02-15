@@ -41,7 +41,7 @@ func GetBannerStat(db *pg.DB, audience, slot string) ([]*models.Statistics, erro
 
 func AddClick(db *pg.DB, banner, slot, audience string) error {
 	var row *models.Statistics
-	query := `UPDATE statistics SET clicks = clicks + 1
+	query := `  UPDATE statistics SET clicks = clicks + 1
 				WHERE banner_id = ?
 				AND slot_id = ?
 				AND audience_id = ?;

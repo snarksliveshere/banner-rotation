@@ -65,8 +65,8 @@ type notifyTest struct {
 }
 
 func TestMain(m *testing.M) {
-	fmt.Println("waiting 3s")
-	time.Sleep(3 * time.Second)
+	fmt.Println("waiting 5s.....")
+	time.Sleep(5 * time.Second)
 	status := godog.RunWithOptions("integration", func(s *godog.Suite) {
 		FeatureContext(s)
 	}, godog.Options{
@@ -98,12 +98,14 @@ func FeatureContext(s *godog.Suite) {
 	s.Step(`^Status should be equal to success "([^"]*)"$`, test.statusShouldBeEqualToSuccess)
 
 	// GetBanner
-	s.Step(`^I send request to GRPC SendGetBannerMessage with audience "([^"]*)" and slot "([^"]*)"$`, test.iSendRequestToGRPCSendGetBannerMessageWithAudienceAndSlot)
-	s.Step(`^Status should be equal to success "([^"]*)"$`, test.statusShouldBeEqualToSuccess)
-	s.Step(`^The response bannerId should not be empty string$`, test.theResponseBannerIdShouldNotBeEmptyString)
-	//error
-	s.Step(`^I send error request to GRPC SendGetBannerMessage with audience "([^"]*)" and slot "([^"]*)"$`, test.iSendErrorRequestToGRPCSendGetBannerMessageWithAudienceAndSlot)
-	s.Step(`^Error must not be empty$`, test.errorMustNotBeEmpty)
+	for i := 0; i < 6; i++ {
+		s.Step(`^I send request to GRPC SendGetBannerMessage with audience "([^"]*)" and slot "([^"]*)"$`, test.iSendRequestToGRPCSendGetBannerMessageWithAudienceAndSlot)
+		s.Step(`^Status should be equal to success "([^"]*)"$`, test.statusShouldBeEqualToSuccess)
+		s.Step(`^The response bannerId should not be empty string$`, test.theResponseBannerIdShouldNotBeEmptyString)
+		//error
+		s.Step(`^I send error request to GRPC SendGetBannerMessage with audience "([^"]*)" and slot "([^"]*)"$`, test.iSendErrorRequestToGRPCSendGetBannerMessageWithAudienceAndSlot)
+		s.Step(`^Error must not be empty$`, test.errorMustNotBeEmpty)
+	}
 
 	//AddClick
 	s.Step(`^I send request to GRPC SendAddClickBannerMessage with banner "([^"]*)" and slot "([^"]*)" and audience "([^"]*)"$`, test.iSendRequestToGRPCSendAddClickBannerMessageWithBannerAndSlotAndAudience)
