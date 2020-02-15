@@ -28,7 +28,7 @@ func createTimeStampFromTimeString(timeStr string) (*timestamp.Timestamp, error)
 	return ptypes.TimestampProto(t)
 }
 
-func Client(conf configs.AppConfig, log *zap.SugaredLogger) {
+func Client(conf configs.AppConfig, log *zap.SugaredLogger) *GRPCConn {
 	ctx, _ := context.WithTimeout(context.Background(), configs.GRPCTimeoutCancel*time.Second)
 	cc, err := grpc.Dial(conf.ListenIP+":"+conf.GRPCPort, grpc.WithInsecure())
 	if err != nil {
@@ -36,37 +36,35 @@ func Client(conf configs.AppConfig, log *zap.SugaredLogger) {
 		log.Fatalf("could not connect: %v", err)
 	}
 	client := proto.NewBannerServiceClient(cc)
-	grpcConn := GRPCConn{
+	return &GRPCConn{
 		GConn:  cc,
 		Client: client,
 		Ctx:    ctx,
 		log:    log,
 	}
 	// здесь какая-нибудь логика. т.к. мне клиент нужен только для интеграционных тестов, я ее не реализую
-	msg := proto.GetBannerRequestMessage{
-		Audience: &proto.Audience{Id: "male_adult"},
-		Slot:     &proto.Slot{Id: "top_slot_id"},
-	}
-	reply, err := grpcConn.GetBanner(msg)
-	if err != nil {
-		log.Info(err.Error())
-	}
-	if reply == nil {
-		log.Errorf("nil resp from GetBanner with audience:%v,slot:%v", msg.Audience.Id, msg.Slot.Id)
-	}
-	log.Info("banner ID:", reply.Banner.Id)
+	//msg := proto.GetBannerRequestMessage{
+	//	Audience: &proto.Audience{Id: "male_adult"},
+	//	Slot:     &proto.Slot{Id: "top_slot_id"},
+	//}
+	//reply, err := grpcConn.GetBanner(msg)
+	//if err != nil {
+	//	log.Info(err.Error())
+	//}
+	//if reply == nil {
+	//	log.Errorf("nil resp from GetBanner with audience:%v,slot:%v", msg.Audience.Id, msg.Slot.Id)
+	//}
+	//log.Info("banner ID:", reply.Banner.Id, "response status:", reply.Response.Status)
 
-	defer func() { _ = grpcConn.GConn.Close() }()
 }
 
 func (g *GRPCConn) GetBanner(msg proto.GetBannerRequestMessage) (*proto.GetBannerResponseMessage, error) {
+	defer func() { _ = g.GConn.Close() }()
 	resp, err := g.Client.SendGetBannerMessage(g.Ctx, &msg)
 	if err != nil {
 		return nil, err
 	}
 	return resp, nil
 }
-
-//protoc ./proto/events.proto --go_out=plugins=grpc:.
 
 //protoc ./proto/events.proto --go_out=plugins=grpc:.

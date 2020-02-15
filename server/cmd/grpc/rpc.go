@@ -3,6 +3,7 @@ package grpc
 import (
 	"context"
 	"github.com/snarksliveshere/banner-rotation/server/api/proto"
+	"github.com/snarksliveshere/banner-rotation/server/configs"
 	"github.com/snarksliveshere/banner-rotation/server/internal/task"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -22,7 +23,12 @@ func (s ServerBanner) SendGetBannerMessage(ctx context.Context, msg *proto.GetBa
 	if err != nil {
 		return nil, status.Error(codes.Aborted, err.Error())
 	}
-	reply := proto.GetBannerResponseMessage{Banner: &proto.Banner{Id: banner}}
+	reply := proto.GetBannerResponseMessage{
+		Banner: &proto.Banner{Id: banner},
+		Response: &proto.Response{
+			Status: configs.ProtoResponseStatusSuccess,
+		},
+	}
 	return &reply, nil
 }
 

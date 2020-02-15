@@ -29,8 +29,14 @@ message Date {
     google.protobuf.Timestamp date = 1;
 }
 
+enum Status {
+    default = 0;
+    success = 1;
+    error = 2;
+}
+
 message Response {
-    string result = 1;
+    Status status = 1;
     string message = 2;
 }
 
@@ -46,6 +52,7 @@ message GetBannerRequestMessage {
 
 message GetBannerResponseMessage {
     Banner banner = 1;
+    Response response =2;
 }
 
 message AddBannerToSlotRequestMessage {
