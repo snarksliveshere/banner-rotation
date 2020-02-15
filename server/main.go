@@ -3,10 +3,14 @@ package main
 import (
 	"github.com/kelseyhightower/envconfig"
 	"github.com/snarksliveshere/banner-rotation/server/cmd/grpc"
+	"github.com/snarksliveshere/banner-rotation/server/cmd/rabbit"
 	"github.com/snarksliveshere/banner-rotation/server/configs"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"log"
+	"os"
+	"os/signal"
+	"syscall"
 )
 
 func failOnError(err error, msg string) {
@@ -19,8 +23,17 @@ func main() {
 	var conf configs.AppConfig
 	failOnError(envconfig.Process("reg_service", &conf), "failed to init config")
 
-	grpc.Server(conf, loggerInit())
-	//task.Run(db)
+	stopCh := make(chan os.Signal, 1)
+	signal.Notify(stopCh, syscall.SIGINT, syscall.SIGTERM)
+	slog := loggerInit()
+	rabbitConn := rabbit.RabbitCreateConnection(conf, slog)
+	defer func() { _ = rabbitConn.Close() }()
+	rabbitChannel := rabbit.RabbitCreateChannel(rabbitConn)
+	defer func() { _ = rabbitChannel.Close() }()
+	go func() { grpc.Server(conf, slog, rabbitChannel) }()
+	go func() { rabbit.RabbitCreateserver(rabbitChannel) }()
+
+	<-stopCh
 }
 
 func loggerInit() *zap.SugaredLogger {
@@ -32,11 +45,6 @@ func loggerInit() *zap.SugaredLogger {
 	}
 	slog := logger.Sugar()
 	defer func() { _ = slog.Sync() }()
-	//slog.Infow("failed to fetch URL",
-	//	"url", "http://example.com",
-	//	"attempt", 3,
-	//	"backoff", time.Second,
-	//)
 	slog.Info("GRPC Server Starts")
 	return slog
 }

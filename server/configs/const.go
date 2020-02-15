@@ -13,4 +13,7 @@ const (
 	ProtoResponseStatusDefault = 0
 	ProtoResponseStatusSuccess = 1
 	ProtoResponseStatusError   = 2
+	BannerStatQueue            = "banner_statistics"
+	BannerStatClick            = "click"
+	BannerStatShow             = "show"
 )

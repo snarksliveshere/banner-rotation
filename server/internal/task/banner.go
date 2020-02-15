@@ -1,10 +1,14 @@
 package task
 
 import (
+	"encoding/json"
 	"github.com/go-pg/pg"
+	"github.com/snarksliveshere/banner-rotation/server/configs"
 	"github.com/snarksliveshere/banner-rotation/server/internal/database"
 	"github.com/snarksliveshere/banner-rotation/server/internal/database/models"
+	"github.com/streadway/amqp"
 	"go.uber.org/zap"
+	"time"
 )
 
 type Banner struct {
@@ -32,7 +36,15 @@ type Percentage struct {
 	end   int
 }
 
-func ReturnBanner(db *pg.DB, slog *zap.SugaredLogger, audience, slot string) (string, error) {
+type BannerStatistics struct {
+	Type     string `json:"type"`
+	Slot     string `json:"slot"`
+	Audience string `json:"audience"`
+	Banner   string `json:"banner"`
+	Time     string `json:"time"`
+}
+
+func ReturnBanner(db *pg.DB, slog *zap.SugaredLogger, channel *amqp.Channel, audience, slot string) (string, error) {
 	bannersRows, err := database.GetBannerStat(db, audience, slot)
 	if err != nil {
 		return "", err
@@ -56,11 +68,42 @@ func ReturnBanner(db *pg.DB, slog *zap.SugaredLogger, audience, slot string) (st
 	if err != nil {
 		return "", err
 	}
+	statToRabbit := &BannerStatistics{
+		Type:     configs.BannerStatShow,
+		Slot:     slot,
+		Audience: audience,
+		Banner:   banner.Id,
+		Time:     time.Now().Format(configs.EventTimeLayout),
+	}
+
+	data, err := json.Marshal(statToRabbit)
+	if err != nil {
+		return "", err
+	}
+	err = bannerStatToRabbit(channel, configs.BannerStatQueue, data)
+	if err != nil {
+		return "", err
+	}
 	return banner.Id, nil
 }
 
-func AddClickToBanner(db *pg.DB, banner, slot, audience string) error {
+func AddClickToBanner(db *pg.DB, channel *amqp.Channel, banner, slot, audience string) error {
 	err := database.AddClick(db, banner, slot, audience)
+	if err != nil {
+		return err
+	}
+	statToRabbit := &BannerStatistics{
+		Type:     configs.BannerStatClick,
+		Slot:     slot,
+		Audience: audience,
+		Banner:   banner,
+		Time:     time.Now().Format(configs.EventTimeLayout),
+	}
+	data, err := json.Marshal(statToRabbit)
+	if err != nil {
+		return err
+	}
+	err = bannerStatToRabbit(channel, configs.BannerStatQueue, data)
 	if err != nil {
 		return err
 	}
@@ -77,6 +120,23 @@ func AddBannerToSlot(db *pg.DB, banner, slot string) error {
 
 func DeleteBannerFromSlot(db *pg.DB, banner, slot string) error {
 	err := database.DeleteBannerToSlot(db, banner, slot)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func bannerStatToRabbit(ch *amqp.Channel, rk string, stat []byte) error {
+	err := ch.Publish(
+		"",    // exchange
+		rk,    // routing key
+		false, // mandatory
+		false,
+		amqp.Publishing{
+			DeliveryMode: amqp.Persistent,
+			ContentType:  "text/plain",
+			Body:         stat,
+		})
 	if err != nil {
 		return err
 	}

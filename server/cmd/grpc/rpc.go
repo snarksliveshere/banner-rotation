@@ -24,7 +24,7 @@ func (s ServerBanner) SendHealthCheckMessage(context.Context, *proto.Empty) (*pr
 }
 
 func (s ServerBanner) SendGetBannerMessage(ctx context.Context, msg *proto.GetBannerRequestMessage) (*proto.GetBannerResponseMessage, error) {
-	banner, err := task.ReturnBanner(s.db, s.log, msg.Audience.Id, msg.Slot.Id)
+	banner, err := task.ReturnBanner(s.db, s.log, s.channel, msg.Audience.Id, msg.Slot.Id)
 	if err != nil {
 		return nil, status.Error(codes.Aborted, err.Error())
 	}
@@ -56,7 +56,7 @@ func (s ServerBanner) SendDeleteBannerFromSlotMessage(ctx context.Context, msg *
 }
 
 func (s ServerBanner) SendAddClickBannerMessage(ctx context.Context, msg *proto.AddClickRequestMessage) (*proto.ResponseBannerMessage, error) {
-	err := task.AddClickToBanner(s.db, msg.Banner.Id, msg.Slot.Id, msg.Audience.Id)
+	err := task.AddClickToBanner(s.db, s.channel, msg.Banner.Id, msg.Slot.Id, msg.Audience.Id)
 	if err != nil {
 		return nil, status.Error(codes.Aborted, err.Error())
 	}

@@ -4,27 +4,23 @@ import (
 	"github.com/go-pg/pg"
 	"github.com/snarksliveshere/banner-rotation/server/api/proto"
 	"github.com/snarksliveshere/banner-rotation/server/configs"
+	"github.com/streadway/amqp"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"net"
-	"os"
-	"os/signal"
-	"syscall"
 )
 
 type ServerBanner struct {
-	db  *pg.DB
-	log *zap.SugaredLogger
+	db      *pg.DB
+	log     *zap.SugaredLogger
+	channel *amqp.Channel
 }
 
-func Server(conf configs.AppConfig, log *zap.SugaredLogger) {
-	stopCh := make(chan os.Signal, 1)
-	signal.Notify(stopCh, syscall.SIGINT, syscall.SIGTERM)
-	go func() { goGRPC(conf, log) }()
-	<-stopCh
+func Server(conf configs.AppConfig, log *zap.SugaredLogger, channel *amqp.Channel) {
+	goGRPC(conf, log, channel)
 }
 
-func goGRPC(conf configs.AppConfig, log *zap.SugaredLogger) {
+func goGRPC(conf configs.AppConfig, log *zap.SugaredLogger, channel *amqp.Channel) {
 	listenAddr := conf.ListenIP + ":" + conf.GRPCPort
 	listen, err := net.Listen("tcp", listenAddr)
 	if err != nil {
@@ -33,8 +29,9 @@ func goGRPC(conf configs.AppConfig, log *zap.SugaredLogger) {
 	grpcServer := grpc.NewServer()
 	dbInst := configs.DB{Conf: &conf}
 	serverBanner := ServerBanner{
-		db:  dbInst.CreatePgConn(),
-		log: log,
+		db:      dbInst.CreatePgConn(),
+		log:     log,
+		channel: channel,
 	}
 	proto.RegisterBannerServiceServer(grpcServer, serverBanner)
 	err = grpcServer.Serve(listen)

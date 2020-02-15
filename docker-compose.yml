@@ -37,19 +37,19 @@ services:
     networks:
       apinet:
         ipv4_address: 163.30.99.52
-#
-#  rabbit:
-#    image: "rabbitmq:3-management"
-#    container_name: rabbit
-#    environment:
-#      RABBITMQ_DEFAULT_USER: "guest"
-#      RABBITMQ_DEFAULT_PASS: "guest"
-#    ports:
-#      - "15672:15672"
-#      - "5672:5672"
-#    networks:
-#      apinet:
-#        ipv4_address: 162.30.99.53
+
+  rabbit:
+    image: "rabbitmq:3-management"
+    container_name: rabbit
+    environment:
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    networks:
+      apinet:
+        ipv4_address: 163.30.99.55
 #
 #  test_server:
 #    build:
