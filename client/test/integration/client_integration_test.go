@@ -88,7 +88,7 @@ func FeatureContext(s *godog.Suite) {
 	s.Step(`^Status should be equal to success "([^"]*)"$`, test.statusShouldBeEqualToSuccess)
 
 	// GetBanner
-	s.Step(`^I send request to GRPC server SendGetBannerMessage$`, test.iSendRequestToGRPCServerSendGetBannerMessage)
+	s.Step(`^I send request to GRPC SendGetBannerMessage with audience "([^"]*)" and slot "([^"]*)"$`, test.iSendRequestToGRPCSendGetBannerMessageWithAudienceAndSlot)
 	s.Step(`^Status should be equal to success "([^"]*)"$`, test.statusShouldBeEqualToSuccess)
 	s.Step(`^The response bannerId should not be empty string$`, test.theResponseBannerIdShouldNotBeEmptyString)
 }
@@ -103,12 +103,12 @@ func (test *notifyTest) iSendRequestToGRPCSendHealthCheckMessage() error {
 	return nil
 }
 
-func (test *notifyTest) iSendRequestToGRPCServerSendGetBannerMessage() error {
+func (test *notifyTest) iSendRequestToGRPCSendGetBannerMessageWithAudienceAndSlot(audience, slot string) error {
 	c := grpc.Client(conf, slog)
 
 	msg := proto.GetBannerRequestMessage{
-		Audience: &proto.Audience{Id: "male_adult"},
-		Slot:     &proto.Slot{Id: "top_slot_id"},
+		Audience: &proto.Audience{Id: audience},
+		Slot:     &proto.Slot{Id: slot},
 	}
 	reply, err := c.GetBanner(msg)
 	if err != nil {

@@ -76,4 +76,13 @@ func (g *GRPCConn) GetBanner(msg proto.GetBannerRequestMessage) (*proto.GetBanne
 	return resp, nil
 }
 
+func (g *GRPCConn) addClick(msg proto.AddClickRequestMessage) (*proto.ResponseBannerMessage, error) {
+	defer func() { _ = g.GConn.Close() }()
+	resp, err := g.Client.SendAddClickBannerMessage(g.Ctx, &msg)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
 //protoc ./proto/events.proto --go_out=plugins=grpc:.
