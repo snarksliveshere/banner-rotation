@@ -26,3 +26,18 @@ func (test *notifyTest) iSendRequestToGRPCSendGetBannerMessageWithAudienceAndSlo
 	test.banner.id = reply.Banner.Id
 	return nil
 }
+
+func (test *notifyTest) iSendErrorRequestToGRPCSendGetBannerMessageWithAudienceAndSlot(audience, slot string) error {
+	c := grpc.Client(conf, slog)
+
+	msg := proto.GetBannerRequestMessage{
+		Audience: &proto.Audience{Id: audience},
+		Slot:     &proto.Slot{Id: slot},
+	}
+	_, err := c.GetBanner(msg)
+	if err != nil {
+		test.errorGRPC = status.Convert(err).Message()
+		return nil
+	}
+	return fmt.Errorf("there is no error in error method:%s\n", "iSendErrorRequestToGRPCSendGetBannerMessageWithAudienceAndSlot")
+}

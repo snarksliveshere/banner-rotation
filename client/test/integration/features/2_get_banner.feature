@@ -7,4 +7,6 @@ Feature: GetBanner BY GRPC method
     Then Status should be equal to success "success"
     And  The response bannerId should not be empty string
 
-# other way
+  Scenario: Error Scenario
+    When I send error request to GRPC SendGetBannerMessage with audience "fake_adult" and slot "fake_slot"
+    Then Error must not be empty

@@ -59,8 +59,9 @@ type response struct {
 }
 
 type notifyTest struct {
-	banner   banner
-	response response
+	banner    banner
+	response  response
+	errorGRPC string
 }
 
 func TestMain(m *testing.M) {
@@ -81,6 +82,16 @@ func TestMain(m *testing.M) {
 	os.Exit(status)
 }
 
+func (test *notifyTest) errorMustNotBeEmpty() error {
+	if test.errorGRPC == "" {
+		test.errorGRPC = ""
+		return fmt.Errorf("there is no error in error method")
+	}
+	slog.Info("right place for error:", test.errorGRPC)
+	test.errorGRPC = ""
+	return nil
+}
+
 func FeatureContext(s *godog.Suite) {
 	test := new(notifyTest)
 	// HealthCheck
@@ -91,10 +102,16 @@ func FeatureContext(s *godog.Suite) {
 	s.Step(`^I send request to GRPC SendGetBannerMessage with audience "([^"]*)" and slot "([^"]*)"$`, test.iSendRequestToGRPCSendGetBannerMessageWithAudienceAndSlot)
 	s.Step(`^Status should be equal to success "([^"]*)"$`, test.statusShouldBeEqualToSuccess)
 	s.Step(`^The response bannerId should not be empty string$`, test.theResponseBannerIdShouldNotBeEmptyString)
+	//error
+	s.Step(`^I send error request to GRPC SendGetBannerMessage with audience "([^"]*)" and slot "([^"]*)"$`, test.iSendErrorRequestToGRPCSendGetBannerMessageWithAudienceAndSlot)
+	s.Step(`^Error must not be empty$`, test.errorMustNotBeEmpty)
 
 	//AddClick
 	s.Step(`^I send request to GRPC SendAddClickBannerMessage with banner "([^"]*)" and slot "([^"]*)" and audience "([^"]*)"$`, test.iSendRequestToGRPCSendAddClickBannerMessageWithBannerAndSlotAndAudience)
 	s.Step(`^Status should be equal to success "([^"]*)"$`, test.statusShouldBeEqualToSuccess)
+	//error
+	s.Step(`^I send error request to GRPC SendAddClickBannerMessage with banner "([^"]*)" and slot "([^"]*)" and audience "([^"]*)"$`, test.iSendErrorRequestToGRPCSendAddClickBannerMessageWithBannerAndSlotAndAudience)
+	s.Step(`^Error must not be empty$`, test.errorMustNotBeEmpty)
 
 }
 

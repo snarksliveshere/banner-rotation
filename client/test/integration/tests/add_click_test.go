@@ -24,3 +24,21 @@ func (test *notifyTest) iSendRequestToGRPCSendAddClickBannerMessageWithBannerAnd
 	test.response.responseStatus = reply.Response.Status.String()
 	return nil
 }
+
+func (test *notifyTest) iSendErrorRequestToGRPCSendAddClickBannerMessageWithBannerAndSlotAndAudience(banner, slot, audience string) error {
+	c := grpc.Client(conf, slog)
+
+	msg := proto.AddClickRequestMessage{
+		Banner:   &proto.Banner{Id: banner},
+		Audience: &proto.Audience{Id: audience},
+		Slot:     &proto.Slot{Id: slot},
+	}
+
+	_, err := c.AddClick(msg)
+
+	if err != nil {
+		test.errorGRPC = status.Convert(err).Message()
+		return nil
+	}
+	return fmt.Errorf("there is no error in error method:%s\n", "iSendErrorRequestToGRPCSendAddClickBannerMessageWithBannerAndSlotAndAudience")
+}

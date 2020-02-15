@@ -1,20 +1,22 @@
 package database
 
 import (
+	"errors"
 	"github.com/go-pg/pg"
 	"github.com/snarksliveshere/banner-rotation/server/internal/database/models"
 	"go.uber.org/zap"
 )
 
-func InsertRowIntoStat(db *pg.DB, log *zap.SugaredLogger, loadedRow *models.Statistics) {
+func InsertRowIntoStat(db *pg.DB, log *zap.SugaredLogger, loadedRow *models.Statistics) error {
 	_, err := db.Model(loadedRow).
 		OnConflict("(audience_id, banner_id, slot_id) DO UPDATE").
 		Set("clicks = EXCLUDED.clicks").
 		Set("shows = EXCLUDED.shows").
 		Insert()
 	if err != nil {
-		log.Error(err.Error())
+		return err
 	}
+	return nil
 }
 
 func GetBannerStat(db *pg.DB, audience, slot string) ([]*models.Statistics, error) {
@@ -45,7 +47,13 @@ func AddClick(db *pg.DB, banner, slot, audience string) error {
 				AND audience_id = ?;
 			`
 
-	_, err := db.Query(row, query, banner, slot, audience)
+	res, err := db.Query(row, query, banner, slot, audience)
+	if res == nil {
+		return errors.New("there is no result in addClick method")
+	}
+	if res.RowsAffected() == 0 {
+		return errors.New("there is no affected rows in addClick method")
+	}
 
 	if err != nil {
 		return err

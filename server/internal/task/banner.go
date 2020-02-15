@@ -52,7 +52,10 @@ func ReturnBanner(db *pg.DB, slog *zap.SugaredLogger, audience, slot string) (st
 		Clicks:     uint64(banner.Clicks),
 		Shows:      uint64(banner.Shows) + 1,
 	}
-	database.InsertRowIntoStat(db, slog, row)
+	err = database.InsertRowIntoStat(db, slog, row)
+	if err != nil {
+		return "", err
+	}
 	return banner.Id, nil
 }
 
