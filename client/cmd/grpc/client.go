@@ -30,7 +30,6 @@ func createTimeStampFromTimeString(timeStr string) (*timestamp.Timestamp, error)
 
 func Client(conf configs.AppConfig, log *zap.SugaredLogger) *GRPCConn {
 	ctx, _ := context.WithTimeout(context.Background(), configs.GRPCTimeoutCancel*time.Second)
-	//ctx := context.Background()
 	cc, err := grpc.Dial(conf.ListenIP+":"+conf.GRPCPort, grpc.WithInsecure())
 	if err != nil {
 		log.DPanic(err.Error())

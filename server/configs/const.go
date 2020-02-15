@@ -9,7 +9,7 @@ const (
 	StatusSuccess              = "success"
 	StatusError                = "error"
 	ConfigPort                 = "50054"
-	EventTimeLayout            = "2006-01-02T15:04-0700"
+	EventTimeLayout            = "2006-01-02T15:04:05-0700"
 	ProtoResponseStatusDefault = 0
 	ProtoResponseStatusSuccess = 1
 	ProtoResponseStatusError   = 2
