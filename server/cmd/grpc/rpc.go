@@ -18,6 +18,11 @@ import (
 //	//Result     []string      `json:"result,omitempty"`
 //}
 
+func (s ServerBanner) SendHealthCheckMessage(context.Context, *proto.Empty) (*proto.ResponseBannerMessage, error) {
+	reply := proto.ResponseBannerMessage{Response: &proto.Response{Status: configs.ProtoResponseStatusSuccess}}
+	return &reply, nil
+}
+
 func (s ServerBanner) SendGetBannerMessage(ctx context.Context, msg *proto.GetBannerRequestMessage) (*proto.GetBannerResponseMessage, error) {
 	banner, err := task.ReturnBanner(s.db, s.log, msg.Audience.Id, msg.Slot.Id)
 	if err != nil {

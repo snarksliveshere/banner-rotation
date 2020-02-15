@@ -8,6 +8,7 @@ import (
 	"github.com/snarksliveshere/banner-rotation/client/configs"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"google.golang.org/grpc/status"
 	"log"
 	"os"
 	"testing"
@@ -63,8 +64,8 @@ type notifyTest struct {
 }
 
 func TestMain(m *testing.M) {
-	fmt.Println("waiting 5s")
-	time.Sleep(5 * time.Second)
+	fmt.Println("waiting 3s")
+	time.Sleep(3 * time.Second)
 	status := godog.RunWithOptions("integration", func(s *godog.Suite) {
 		FeatureContext(s)
 	}, godog.Options{
@@ -82,9 +83,24 @@ func TestMain(m *testing.M) {
 
 func FeatureContext(s *godog.Suite) {
 	test := new(notifyTest)
+	// HealthCheck
+	s.Step(`^I send request to GRPC SendHealthCheckMessage$`, test.iSendRequestToGRPCSendHealthCheckMessage)
+	s.Step(`^Status should be equal to success "([^"]*)"$`, test.statusShouldBeEqualToSuccess)
+
+	// GetBanner
 	s.Step(`^I send request to GRPC server SendGetBannerMessage$`, test.iSendRequestToGRPCServerSendGetBannerMessage)
 	s.Step(`^Status should be equal to success "([^"]*)"$`, test.statusShouldBeEqualToSuccess)
 	s.Step(`^The response bannerId should not be empty string$`, test.theResponseBannerIdShouldNotBeEmptyString)
+}
+
+func (test *notifyTest) iSendRequestToGRPCSendHealthCheckMessage() error {
+	c := grpc.Client(conf, slog)
+	reply, err := c.GetHealthCheck(proto.Empty{})
+	if err != nil {
+		return fmt.Errorf("error : %s\n", status.Convert(err).Message())
+	}
+	test.response.responseStatus = reply.Response.Status.String()
+	return nil
 }
 
 func (test *notifyTest) iSendRequestToGRPCServerSendGetBannerMessage() error {
@@ -96,7 +112,7 @@ func (test *notifyTest) iSendRequestToGRPCServerSendGetBannerMessage() error {
 	}
 	reply, err := c.GetBanner(msg)
 	if err != nil {
-		return fmt.Errorf(err.Error())
+		return fmt.Errorf("error : %s\n", status.Convert(err).Message())
 	}
 	if reply == nil {
 		errStr := fmt.Sprintf("nil resp from GetBanner with audience:%v,slot:%v", msg.Audience.Id, msg.Slot.Id)

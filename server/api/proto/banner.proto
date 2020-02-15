@@ -7,10 +7,15 @@ option go_package = "proto";
 import "google/protobuf/timestamp.proto";
 
 service BannerService {
+    rpc sendHealthCheckMessage (Empty) returns (ResponseBannerMessage);
     rpc sendGetBannerMessage (GetBannerRequestMessage) returns (GetBannerResponseMessage);
     rpc sendAddBannerToSlotMessage (AddBannerToSlotRequestMessage) returns (ResponseBannerMessage);
     rpc sendDeleteBannerFromSlotMessage (DeleteBannerFromSlotRequestMessage) returns (ResponseBannerMessage);
     rpc sendAddClickBannerMessage (AddClickRequestMessage) returns (ResponseBannerMessage);
+}
+
+message Empty {
+
 }
 
 message Slot {

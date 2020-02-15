@@ -58,6 +58,15 @@ func Client(conf configs.AppConfig, log *zap.SugaredLogger) *GRPCConn {
 
 }
 
+func (g *GRPCConn) GetHealthCheck(msg proto.Empty) (*proto.ResponseBannerMessage, error) {
+	defer func() { _ = g.GConn.Close() }()
+	resp, err := g.Client.SendHealthCheckMessage(g.Ctx, &msg)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
 func (g *GRPCConn) GetBanner(msg proto.GetBannerRequestMessage) (*proto.GetBannerResponseMessage, error) {
 	defer func() { _ = g.GConn.Close() }()
 	resp, err := g.Client.SendGetBannerMessage(g.Ctx, &msg)
