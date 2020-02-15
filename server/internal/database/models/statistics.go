@@ -2,6 +2,7 @@ package models
 
 type Statistics struct {
 	TableName  struct{} `sql:"statistics"`
+	Id         uint64   `sql:"id,notnull"`
 	AudienceId string   `sql:"audience_id,notnull" pg:"unique:public_statistics__uidx"`
 	BannerId   string   `sql:"banner_id,notnull" pg:"unique:public_statistics_uidx"`
 	SlotId     string   `sql:"slot_id,notnull" pg:"unique:public_statistics_uidx"`

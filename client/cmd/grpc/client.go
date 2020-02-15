@@ -30,6 +30,7 @@ func createTimeStampFromTimeString(timeStr string) (*timestamp.Timestamp, error)
 
 func Client(conf configs.AppConfig, log *zap.SugaredLogger) *GRPCConn {
 	ctx, _ := context.WithTimeout(context.Background(), configs.GRPCTimeoutCancel*time.Second)
+	//ctx := context.Background()
 	cc, err := grpc.Dial(conf.ListenIP+":"+conf.GRPCPort, grpc.WithInsecure())
 	if err != nil {
 		log.DPanic(err.Error())
@@ -76,7 +77,7 @@ func (g *GRPCConn) GetBanner(msg proto.GetBannerRequestMessage) (*proto.GetBanne
 	return resp, nil
 }
 
-func (g *GRPCConn) addClick(msg proto.AddClickRequestMessage) (*proto.ResponseBannerMessage, error) {
+func (g *GRPCConn) AddClick(msg proto.AddClickRequestMessage) (*proto.ResponseBannerMessage, error) {
 	defer func() { _ = g.GConn.Close() }()
 	resp, err := g.Client.SendAddClickBannerMessage(g.Ctx, &msg)
 	if err != nil {

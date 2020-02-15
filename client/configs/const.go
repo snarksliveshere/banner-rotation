@@ -1,7 +1,7 @@
 package configs
 
 const (
-	GRPCTimeoutCancel     = 5
+	GRPCTimeoutCancel     = 1
 	TimeLayout            = "2006-01-02"
 	TimeMonthLayout       = "2006-01"
 	HeaderContentTypeHead = "Content-Type"

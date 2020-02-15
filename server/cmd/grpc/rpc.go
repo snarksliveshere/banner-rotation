@@ -45,8 +45,13 @@ func (s ServerBanner) SendDeleteBannerFromSlotMessage(context.Context, *proto.De
 	panic("implement me")
 }
 
-func (s ServerBanner) SendAddClickBannerMessage(context.Context, *proto.AddClickRequestMessage) (*proto.ResponseBannerMessage, error) {
-	panic("implement me")
+func (s ServerBanner) SendAddClickBannerMessage(ctx context.Context, msg *proto.AddClickRequestMessage) (*proto.ResponseBannerMessage, error) {
+	err := task.AddClickToBanner(s.db, msg.Banner.Id, msg.Slot.Id, msg.Audience.Id)
+	if err != nil {
+		return nil, status.Error(codes.Aborted, err.Error())
+	}
+	reply := proto.ResponseBannerMessage{Response: &proto.Response{Status: configs.ProtoResponseStatusSuccess}}
+	return &reply, nil
 }
 
 //func (s ServerCalendar) SendGetEventsForTimeIntervalMessage(ctx context.Context, msg *proto.GetEventsForTimeIntervalRequestMessage) (*proto.GetEventsForTimeIntervalResponseMessage, error) {

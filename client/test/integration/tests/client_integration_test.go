@@ -1,4 +1,4 @@
-package integration
+package integration_test
 
 import (
 	"fmt"
@@ -70,7 +70,7 @@ func TestMain(m *testing.M) {
 		FeatureContext(s)
 	}, godog.Options{
 		Format:        "pretty",
-		Paths:         []string{"features"},
+		Paths:         []string{"../features"},
 		Randomize:     0,
 		StopOnFailure: true,
 	})
@@ -91,35 +91,20 @@ func FeatureContext(s *godog.Suite) {
 	s.Step(`^I send request to GRPC SendGetBannerMessage with audience "([^"]*)" and slot "([^"]*)"$`, test.iSendRequestToGRPCSendGetBannerMessageWithAudienceAndSlot)
 	s.Step(`^Status should be equal to success "([^"]*)"$`, test.statusShouldBeEqualToSuccess)
 	s.Step(`^The response bannerId should not be empty string$`, test.theResponseBannerIdShouldNotBeEmptyString)
+
+	//AddClick
+	s.Step(`^I send request to GRPC SendAddClickBannerMessage with banner "([^"]*)" and slot "([^"]*)" and audience "([^"]*)"$`, test.iSendRequestToGRPCSendAddClickBannerMessageWithBannerAndSlotAndAudience)
+	s.Step(`^Status should be equal to success "([^"]*)"$`, test.statusShouldBeEqualToSuccess)
+
 }
 
 func (test *notifyTest) iSendRequestToGRPCSendHealthCheckMessage() error {
 	c := grpc.Client(conf, slog)
 	reply, err := c.GetHealthCheck(proto.Empty{})
 	if err != nil {
-		return fmt.Errorf("error : %s\n", status.Convert(err).Message())
+		return fmt.Errorf("error in method:%s:%s\n", "iSendRequestToGRPCSendHealthCheckMessage", status.Convert(err).Message())
 	}
 	test.response.responseStatus = reply.Response.Status.String()
-	return nil
-}
-
-func (test *notifyTest) iSendRequestToGRPCSendGetBannerMessageWithAudienceAndSlot(audience, slot string) error {
-	c := grpc.Client(conf, slog)
-
-	msg := proto.GetBannerRequestMessage{
-		Audience: &proto.Audience{Id: audience},
-		Slot:     &proto.Slot{Id: slot},
-	}
-	reply, err := c.GetBanner(msg)
-	if err != nil {
-		return fmt.Errorf("error : %s\n", status.Convert(err).Message())
-	}
-	if reply == nil {
-		errStr := fmt.Sprintf("nil resp from GetBanner with audience:%v,slot:%v", msg.Audience.Id, msg.Slot.Id)
-		return fmt.Errorf(errStr)
-	}
-	test.response.responseStatus = reply.Response.Status.String()
-	test.banner.id = reply.Banner.Id
 	return nil
 }
 
@@ -136,17 +121,3 @@ func (test *notifyTest) theResponseBannerIdShouldNotBeEmptyString() error {
 	}
 	return nil
 }
-
-//func (test *notifyTest) statusShouldBeEqualToSuccess(status string) error {
-//	if test.responseStruct.Status != status {
-//		return fmt.Errorf("status must be: %s, not %s", status, test.responseStruct.Status)
-//	}
-//	return nil
-//}
-//
-//func (test *notifyTest) statusShouldBeEqualToError(status string) error {
-//	if test.responseStruct.Status != status {
-//		return fmt.Errorf("status must be: %s, not %s", status, test.responseStruct.Status)
-//	}
-//	return nil
-//}

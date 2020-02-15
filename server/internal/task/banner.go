@@ -52,9 +52,18 @@ func ReturnBanner(db *pg.DB, slog *zap.SugaredLogger, audience, slot string) (st
 		Clicks:     uint64(banner.Clicks),
 		Shows:      uint64(banner.Shows) + 1,
 	}
-	go database.InsertRowIntoStat(db, slog, row)
+	database.InsertRowIntoStat(db, slog, row)
 	return banner.Id, nil
 }
+
+func AddClickToBanner(db *pg.DB, banner, slot, audience string) error {
+	err := database.AddClick(db, banner, slot, audience)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func insertBannerStatToDB(db *pg.DB, slog *zap.SugaredLogger, banner, audience, slot string) {
 
 }

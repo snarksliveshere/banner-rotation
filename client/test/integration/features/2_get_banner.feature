@@ -7,3 +7,4 @@ Feature: GetBanner BY GRPC method
     Then Status should be equal to success "success"
     And  The response bannerId should not be empty string
 
+# other way

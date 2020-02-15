@@ -36,3 +36,19 @@ func GetBannerStat(db *pg.DB, audience, slot string) ([]*models.Statistics, erro
 	}
 	return loadedRows, nil
 }
+
+func AddClick(db *pg.DB, banner, slot, audience string) error {
+	var row *models.Statistics
+	query := `UPDATE statistics SET clicks = clicks + 1
+				WHERE banner_id = ?
+				AND slot_id = ?
+				AND audience_id = ?;
+			`
+
+	_, err := db.Query(row, query, banner, slot, audience)
+
+	if err != nil {
+		return err
+	}
+	return nil
+}
