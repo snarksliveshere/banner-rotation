@@ -48,6 +48,9 @@ func AddClick(db *pg.DB, banner, slot, audience string) error {
 			`
 
 	res, err := db.Query(row, query, banner, slot, audience)
+	if err != nil {
+		return err
+	}
 	if res == nil {
 		return errors.New("there is no result in addClick method")
 	}
@@ -55,15 +58,12 @@ func AddClick(db *pg.DB, banner, slot, audience string) error {
 		return errors.New("there is no affected rows in addClick method")
 	}
 
-	if err != nil {
-		return err
-	}
 	return nil
 }
 
 func AddBannerToSlot(db *pg.DB, banner, slot string) error {
 	var row *models.Banner2Slot
-	query := `INSERT INTO (banner_fk, slot_fk)
+	query := `INSERT INTO banner2slot (banner_fk, slot_fk)
 			  VALUES 
 			  (
 				(SELECT id FROM banner WHERE banner_id = ?),
@@ -72,6 +72,9 @@ func AddBannerToSlot(db *pg.DB, banner, slot string) error {
 			`
 
 	res, err := db.Query(row, query, banner, slot)
+	if err != nil {
+		return err
+	}
 	if res == nil {
 		return errors.New("there is no result in AddBannerToSlot method")
 	}
@@ -79,9 +82,6 @@ func AddBannerToSlot(db *pg.DB, banner, slot string) error {
 		return errors.New("there is no affected rows in AddBannerToSlot method")
 	}
 
-	if err != nil {
-		return err
-	}
 	return nil
 }
 
@@ -94,6 +94,9 @@ func DeleteBannerToSlot(db *pg.DB, banner, slot string) error {
 			`
 
 	res, err := db.Query(row, query, banner, slot)
+	if err != nil {
+		return err
+	}
 	if res == nil {
 		return errors.New("there is no result in DeleteBannerToSlot method")
 	}
@@ -101,8 +104,5 @@ func DeleteBannerToSlot(db *pg.DB, banner, slot string) error {
 		return errors.New("there is no affected rows in DeleteBannerToSlot method")
 	}
 
-	if err != nil {
-		return err
-	}
 	return nil
 }

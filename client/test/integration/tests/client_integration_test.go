@@ -87,7 +87,6 @@ func (test *notifyTest) errorMustNotBeEmpty() error {
 		test.errorGRPC = ""
 		return fmt.Errorf("there is no error in error method")
 	}
-	slog.Info("right place for error:", test.errorGRPC)
 	test.errorGRPC = ""
 	return nil
 }
@@ -120,7 +119,7 @@ func FeatureContext(s *godog.Suite) {
 	s.Step(`^I send error request to GRPC sendAddBannerToSlotMessage with banner "([^"]*)" and slot "([^"]*)"$`, test.iSendErrorRequestToGRPCSendAddBannerToSlotMessageWithBannerAndSlot)
 	s.Step(`^Error must not be empty$`, test.errorMustNotBeEmpty)
 
-	// DeleteBannerFromSlot
+	//DeleteBannerFromSlot
 	s.Step(`^I send request to GRPC sendDeleteBannerFromSlotMessage with banner "([^"]*)" and slot "([^"]*)"$`, test.iSendRequestToGRPCSendDeleteBannerFromSlotMessageWithBannerAndSlot)
 	s.Step(`^Status should be equal to success "([^"]*)"$`, test.statusShouldBeEqualToSuccess)
 	//error
