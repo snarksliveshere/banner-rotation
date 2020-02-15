@@ -67,6 +67,22 @@ func AddClickToBanner(db *pg.DB, banner, slot, audience string) error {
 	return nil
 }
 
+func AddBannerToSlot(db *pg.DB, banner, slot string) error {
+	err := database.AddBannerToSlot(db, banner, slot)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func DeleteBannerFromSlot(db *pg.DB, banner, slot string) error {
+	err := database.DeleteBannerToSlot(db, banner, slot)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func insertBannerStatToDB(db *pg.DB, slog *zap.SugaredLogger, banner, audience, slot string) {
 
 }

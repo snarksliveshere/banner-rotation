@@ -60,3 +60,49 @@ func AddClick(db *pg.DB, banner, slot, audience string) error {
 	}
 	return nil
 }
+
+func AddBannerToSlot(db *pg.DB, banner, slot string) error {
+	var row *models.Banner2Slot
+	query := `INSERT INTO (banner_fk, slot_fk)
+			  VALUES 
+			  (
+				(SELECT id FROM banner WHERE banner_id = ?),
+				(SELECT id FROM slot WHERE slot_id = ?)
+			  );
+			`
+
+	res, err := db.Query(row, query, banner, slot)
+	if res == nil {
+		return errors.New("there is no result in AddBannerToSlot method")
+	}
+	if res.RowsAffected() == 0 {
+		return errors.New("there is no affected rows in AddBannerToSlot method")
+	}
+
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func DeleteBannerToSlot(db *pg.DB, banner, slot string) error {
+	var row *models.Banner2Slot
+	query := `DELETE FROM banner2slot
+			  WHERE banner_fk = (SELECT id FROM banner WHERE banner_id = ?)  
+			  AND slot_fk = (SELECT id FROM slot WHERE slot_id = ?)  
+			  ;
+			`
+
+	res, err := db.Query(row, query, banner, slot)
+	if res == nil {
+		return errors.New("there is no result in DeleteBannerToSlot method")
+	}
+	if res.RowsAffected() == 0 {
+		return errors.New("there is no affected rows in DeleteBannerToSlot method")
+	}
+
+	if err != nil {
+		return err
+	}
+	return nil
+}

@@ -18,8 +18,7 @@ func (test *notifyTest) iSendRequestToGRPCSendAddClickBannerMessageWithBannerAnd
 
 	reply, err := c.AddClick(msg)
 	if err != nil {
-		return fmt.Errorf("error in method: %s : %s\n",
-			"iSendRequestToGRPCSendAddClickBannerMessageWithBannerAndSlotAndAudience", status.Convert(err).Message())
+		return fmt.Errorf("error in method: %s : %s\n", "AddClick", status.Convert(err).Message())
 	}
 	test.response.responseStatus = reply.Response.Status.String()
 	return nil

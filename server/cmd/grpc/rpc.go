@@ -37,12 +37,22 @@ func (s ServerBanner) SendGetBannerMessage(ctx context.Context, msg *proto.GetBa
 	return &reply, nil
 }
 
-func (s ServerBanner) SendAddBannerToSlotMessage(context.Context, *proto.AddBannerToSlotRequestMessage) (*proto.ResponseBannerMessage, error) {
-	panic("implement me")
+func (s ServerBanner) SendAddBannerToSlotMessage(ctx context.Context, msg *proto.AddBannerToSlotRequestMessage) (*proto.ResponseBannerMessage, error) {
+	err := task.AddBannerToSlot(s.db, msg.Banner.Id, msg.Slot.Id)
+	if err != nil {
+		return nil, status.Error(codes.Aborted, err.Error())
+	}
+	reply := proto.ResponseBannerMessage{Response: &proto.Response{Status: configs.ProtoResponseStatusSuccess}}
+	return &reply, nil
 }
 
-func (s ServerBanner) SendDeleteBannerFromSlotMessage(context.Context, *proto.DeleteBannerFromSlotRequestMessage) (*proto.ResponseBannerMessage, error) {
-	panic("implement me")
+func (s ServerBanner) SendDeleteBannerFromSlotMessage(ctx context.Context, msg *proto.DeleteBannerFromSlotRequestMessage) (*proto.ResponseBannerMessage, error) {
+	err := task.DeleteBannerFromSlot(s.db, msg.Banner.Id, msg.Slot.Id)
+	if err != nil {
+		return nil, status.Error(codes.Aborted, err.Error())
+	}
+	reply := proto.ResponseBannerMessage{Response: &proto.Response{Status: configs.ProtoResponseStatusSuccess}}
+	return &reply, nil
 }
 
 func (s ServerBanner) SendAddClickBannerMessage(ctx context.Context, msg *proto.AddClickRequestMessage) (*proto.ResponseBannerMessage, error) {
@@ -53,26 +63,3 @@ func (s ServerBanner) SendAddClickBannerMessage(ctx context.Context, msg *proto.
 	reply := proto.ResponseBannerMessage{Response: &proto.Response{Status: configs.ProtoResponseStatusSuccess}}
 	return &reply, nil
 }
-
-//func (s ServerCalendar) SendGetEventsForTimeIntervalMessage(ctx context.Context, msg *proto.GetEventsForTimeIntervalRequestMessage) (*proto.GetEventsForTimeIntervalResponseMessage, error) {
-//	from, till, err := data_handlers.CheckGetEventByTimeIntervalFromProtoTimestamp(msg.From, msg.Till)
-//	if err != nil {
-//		return nil, status.Error(codes.InvalidArgument, "invalid incoming times")
-//	}
-//	events, err := storage.Actions.EventRepository.GetEventsByTimeInterval(from, till)
-//	reply := proto.GetEventsForTimeIntervalResponseMessage{}
-//
-//	if err != nil {
-//		reply.Status = config.StatusError
-//		reply.Text = err.Error()
-//		return &reply, nil
-//	}
-//	reply.Status = config.StatusSuccess
-//	eventsJson, err := json.Marshal(&events)
-//	if err != nil {
-//		return nil, status.Error(codes.InvalidArgument, "invalid json marshall")
-//	}
-//	reply.Events = string(eventsJson)
-//
-//	return &reply, nil
-//}

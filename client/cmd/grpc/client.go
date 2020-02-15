@@ -86,4 +86,22 @@ func (g *GRPCConn) AddClick(msg proto.AddClickRequestMessage) (*proto.ResponseBa
 	return resp, nil
 }
 
+func (g *GRPCConn) AddBannerToSlot(msg proto.AddBannerToSlotRequestMessage) (*proto.ResponseBannerMessage, error) {
+	defer func() { _ = g.GConn.Close() }()
+	resp, err := g.Client.SendAddBannerToSlotMessage(g.Ctx, &msg)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (g *GRPCConn) DeleteBannerFromSlot(msg proto.DeleteBannerFromSlotRequestMessage) (*proto.ResponseBannerMessage, error) {
+	defer func() { _ = g.GConn.Close() }()
+	resp, err := g.Client.SendDeleteBannerFromSlotMessage(g.Ctx, &msg)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
 //protoc ./proto/events.proto --go_out=plugins=grpc:.

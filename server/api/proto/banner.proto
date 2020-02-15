@@ -61,12 +61,12 @@ message GetBannerResponseMessage {
 }
 
 message AddBannerToSlotRequestMessage {
-    Audience audience = 1;
+    Banner banner = 1;
     Slot slot = 2;
 }
 
 message DeleteBannerFromSlotRequestMessage {
-    Audience audience = 1;
+    Banner banner = 1;
     Slot slot = 2;
 }
 

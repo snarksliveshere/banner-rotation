@@ -113,6 +113,19 @@ func FeatureContext(s *godog.Suite) {
 	s.Step(`^I send error request to GRPC SendAddClickBannerMessage with banner "([^"]*)" and slot "([^"]*)" and audience "([^"]*)"$`, test.iSendErrorRequestToGRPCSendAddClickBannerMessageWithBannerAndSlotAndAudience)
 	s.Step(`^Error must not be empty$`, test.errorMustNotBeEmpty)
 
+	//AddBanner2Slot
+	s.Step(`^I send request to GRPC sendAddBannerToSlotMessage with banner "([^"]*)" and slot "([^"]*)"$`, test.iSendRequestToGRPCSendAddBannerToSlotMessageWithBannerAndSlot)
+	s.Step(`^Status should be equal to success "([^"]*)"$`, test.statusShouldBeEqualToSuccess)
+	// error
+	s.Step(`^I send error request to GRPC sendAddBannerToSlotMessage with banner "([^"]*)" and slot "([^"]*)"$`, test.iSendErrorRequestToGRPCSendAddBannerToSlotMessageWithBannerAndSlot)
+	s.Step(`^Error must not be empty$`, test.errorMustNotBeEmpty)
+
+	// DeleteBannerFromSlot
+	s.Step(`^I send request to GRPC sendDeleteBannerFromSlotMessage with banner "([^"]*)" and slot "([^"]*)"$`, test.iSendRequestToGRPCSendDeleteBannerFromSlotMessageWithBannerAndSlot)
+	s.Step(`^Status should be equal to success "([^"]*)"$`, test.statusShouldBeEqualToSuccess)
+	//error
+	s.Step(`^I send error request to GRPC sendDeleteBannerFromSlotMessage with banner "([^"]*)" and slot "([^"]*)"$`, test.iSendErrorRequestToGRPCSendDeleteBannerFromSlotMessageWithBannerAndSlot)
+	s.Step(`^Error must not be empty$`, test.errorMustNotBeEmpty)
 }
 
 func (test *notifyTest) iSendRequestToGRPCSendHealthCheckMessage() error {
