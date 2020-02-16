@@ -84,7 +84,7 @@ func AddBannerToSlot(db *pg.DB, banner, slot string) error {
 	return nil
 }
 
-func DeleteBannerToSlot(db *pg.DB, banner, slot string) error {
+func DeleteBannerFromSlot(db *pg.DB, banner, slot string) error {
 	var row *models.Banner2Slot
 	query := `DELETE FROM banner2slot
 			  WHERE banner_fk = (SELECT id FROM banner WHERE banner_id = ?)  

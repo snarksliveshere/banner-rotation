@@ -1,7 +1,6 @@
 package db_integration_test
 
 import (
-	"errors"
 	"github.com/go-pg/pg"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/snarksliveshere/banner-rotation/server/configs"
@@ -14,9 +13,10 @@ import (
 )
 
 const (
-	dummyAudience = "male_adult"
-	dummySlot     = "top_slot_id"
-	dummyBanner   = "some_male2_adult_app_id"
+	dummyAudience    = "male_adult"
+	dummySlot        = "top_slot_id"
+	dummyBanner      = "some_male2_adult_app_id"
+	dummyBannerToAdd = "some_male2_kid_app_id"
 )
 
 var (
@@ -37,19 +37,30 @@ func failOnError(err error, msg string) {
 	}
 }
 
+func TestInsertRowIntoStat(t *testing.T) {
+	// after dummy
+	var row []*models.Statistics
+	err := db.Model(&row).Select()
+	if err != nil {
+		t.Errorf("TestInsertRowIntoStat(), db select error:%v\n", err)
+	}
+	if len(row) != 3 {
+		t.Errorf("TestInsertRowIntoStat(), db length error:%v\n", err)
+	}
+}
+
 func TestAddClick(t *testing.T) {
 	var row []*models.Statistics
 	err := db.Model(&row).Column("clicks").
 		Where("banner_id = ?", dummyBanner).
 		Where("audience_id = ?", dummyAudience).
 		Where("slot_id = ?", dummySlot).
-		Limit(1).
 		Select()
 	if err != nil {
 		t.Errorf("TestAddClick(), db select error:%v\n", err)
 	}
 
-	err = AddClick(db, dummyBanner, dummySlot, dummyAudience)
+	err = database.AddClick(db, dummyBanner, dummySlot, dummyAudience)
 	if err != nil {
 		t.Errorf("TestAddClick(), db AddClick error:%v\n", err)
 	}
@@ -75,26 +86,56 @@ func TestAddClick(t *testing.T) {
 	}
 }
 
-func AddClick(db *pg.DB, banner, slot, audience string) error {
-	var row *models.Statistics
-	query := `  UPDATE statistics SET clicks = clicks + 1
-				WHERE banner_id = ?
-				AND slot_id = ?
-				AND audience_id = ?;
+func TestAddBannerToSlot(t *testing.T) {
+	err := database.AddBannerToSlot(db, dummyBannerToAdd, dummySlot)
+	if err != nil {
+		t.Errorf("TestAddBannerToSlot(), db insert error:%v\n", err)
+	}
+	err = database.AddBannerToSlot(db, dummyBannerToAdd, dummySlot)
+	if err == nil {
+		t.Errorf("TestAddBannerToSlot(), db second insert without error\n")
+	}
+
+	var row models.Banner2Slot
+	query := `SELECT banner_fk, slot_fk FROM banner2slot 
+			  WHERE banner_fk = (SELECT id FROM banner WHERE banner_id = ?)
+			  AND slot_fk = (SELECT id FROM slot WHERE slot_id = ?) 		
+			  ;
 			`
 
-	res, err := db.Query(row, query, banner, slot, audience)
+	_, err = db.Query(&row, query, dummyBannerToAdd, dummySlot)
 	if err != nil {
-		return err
+		t.Errorf("TestAddBannerToSlot(), db select check with error:%v\n", err)
 	}
-	if res == nil {
-		return errors.New("there is no result in addClick method")
+	if row.BannerFK == 0 || row.SlotFK == 0 {
+		t.Errorf("TestAddBannerToSlot(), bad result from select:\n")
 	}
-	if res.RowsAffected() == 0 {
-		return errors.New("there is no affected rows in addClick method")
+}
+
+func TestDeleteBannerFromSlot(t *testing.T) {
+	err := database.DeleteBannerFromSlot(db, dummyBannerToAdd, dummySlot)
+	if err != nil {
+		t.Errorf("TestDeleteBannerFromSlot(), db delete error:%v\n", err)
+	}
+	err = database.DeleteBannerFromSlot(db, dummyBannerToAdd, dummySlot)
+	if err == nil {
+		t.Errorf("TestDeleteBannerFromSlot(), db second delete without error\n")
 	}
 
-	return nil
+	var row models.Banner2Slot
+	query := `SELECT banner_fk, slot_fk FROM banner2slot
+			  WHERE banner_fk = (SELECT id FROM banner WHERE banner_id = ?)
+			  AND slot_fk = (SELECT id FROM slot WHERE slot_id = ?)
+			  ;
+			`
+
+	_, err = db.Query(&row, query, dummyBannerToAdd, dummySlot)
+	if err != nil {
+		t.Errorf("TestDeleteBannerFromSlot(), db select check with error:%v\n", err)
+	}
+	if row.BannerFK != 0 || row.SlotFK != 0 {
+		t.Errorf("TestDeleteBannerFromSlot(), bad result from select:\n")
+	}
 }
 
 func setup() {
@@ -105,7 +146,6 @@ func setup() {
 	for i := 0; i < 10; i++ {
 		setDummy()
 	}
-
 }
 
 func setDummy() {

@@ -113,7 +113,7 @@ func AddBannerToSlot(db *pg.DB, banner, slot string) error {
 }
 
 func DeleteBannerFromSlot(db *pg.DB, banner, slot string) error {
-	err := database.DeleteBannerToSlot(db, banner, slot)
+	err := database.DeleteBannerFromSlot(db, banner, slot)
 	if err != nil {
 		return err
 	}
