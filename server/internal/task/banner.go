@@ -122,9 +122,9 @@ func DeleteBannerFromSlot(db *pg.DB, banner, slot string) error {
 
 func bannerStatToRabbit(ch *amqp.Channel, rk string, stat []byte) error {
 	err := ch.Publish(
-		"",    // exchange
-		rk,    // routing key
-		false, // mandatory
+		configs.BannerStatEx, // exchange
+		rk,
+		false,
 		false,
 		amqp.Publishing{
 			DeliveryMode: amqp.Persistent,

@@ -31,7 +31,7 @@ func main() {
 	rabbitChannel := rabbit.RabbitCreateChannel(rabbitConn)
 	defer func() { _ = rabbitChannel.Close() }()
 	go func() { grpc.Server(conf, slog, rabbitChannel) }()
-	go func() { rabbit.RabbitCreateserver(rabbitChannel) }()
+	go func() { rabbit.RabbitCreateServer(rabbitChannel) }()
 
 	<-stopCh
 }

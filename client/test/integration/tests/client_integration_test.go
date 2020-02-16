@@ -11,16 +11,26 @@ import (
 	"google.golang.org/grpc/status"
 	"log"
 	"os"
+	"sync"
 	"testing"
 	"time"
 
 	"github.com/DATA-DOG/godog"
+	"github.com/streadway/amqp"
 )
 
 var (
 	conf configs.AppConfig
 	slog *zap.SugaredLogger
 )
+
+type BannerStatistics struct {
+	Type     string `json:"type"`
+	Slot     string `json:"slot"`
+	Audience string `json:"audience"`
+	Banner   string `json:"banner"`
+	Time     string `json:"time"`
+}
 
 func failOnError(err error, msg string) {
 	if err != nil {
@@ -59,9 +69,14 @@ type response struct {
 }
 
 type notifyTest struct {
-	banner    banner
-	response  response
-	errorGRPC string
+	banner        banner
+	response      response
+	errorGRPC     string
+	conn          *amqp.Connection
+	ch            *amqp.Channel
+	messages      [][]byte
+	messagesMutex *sync.RWMutex
+	stopSignal    chan struct{}
 }
 
 func TestMain(m *testing.M) {
@@ -93,6 +108,9 @@ func (test *notifyTest) errorMustNotBeEmpty() error {
 
 func FeatureContext(s *godog.Suite) {
 	test := new(notifyTest)
+
+	s.BeforeScenario(test.startConsuming)
+
 	// HealthCheck
 	s.Step(`^I send request to GRPC SendHealthCheckMessage$`, test.iSendRequestToGRPCSendHealthCheckMessage)
 	s.Step(`^Status should be equal to success "([^"]*)"$`, test.statusShouldBeEqualToSuccess)
@@ -104,6 +122,9 @@ func FeatureContext(s *godog.Suite) {
 	//error
 	s.Step(`^I send error request to GRPC SendGetBannerMessage with audience "([^"]*)" and slot "([^"]*)"$`, test.iSendErrorRequestToGRPCSendGetBannerMessageWithAudienceAndSlot)
 	s.Step(`^Error must not be empty$`, test.errorMustNotBeEmpty)
+
+	// check notification after GetBanner
+	s.Step(`^Last Notification must contain type "([^"]*)" and audience "([^"]*)" and slot "([^"]*)"$`, test.lastNotificationMustContainTypeAndAudienceAndSlot)
 
 	//AddClick
 	s.Step(`^I send request to GRPC SendAddClickBannerMessage with banner "([^"]*)" and slot "([^"]*)" and audience "([^"]*)"$`, test.iSendRequestToGRPCSendAddClickBannerMessageWithBannerAndSlotAndAudience)
@@ -125,6 +146,8 @@ func FeatureContext(s *godog.Suite) {
 	//error
 	s.Step(`^I send error request to GRPC sendDeleteBannerFromSlotMessage with banner "([^"]*)" and slot "([^"]*)"$`, test.iSendErrorRequestToGRPCSendDeleteBannerFromSlotMessageWithBannerAndSlot)
 	s.Step(`^Error must not be empty$`, test.errorMustNotBeEmpty)
+
+	s.AfterScenario(test.stopConsuming)
 }
 
 func (test *notifyTest) iSendRequestToGRPCSendHealthCheckMessage() error {
@@ -149,4 +172,65 @@ func (test *notifyTest) theResponseBannerIdShouldNotBeEmptyString() error {
 		return fmt.Errorf("unexpected empty string instead banner id")
 	}
 	return nil
+}
+
+func createRabbitConn() *amqp.Connection {
+	strDial := "amqp://" + conf.RabbitUser + ":" + conf.RabbitPassword + "@" + conf.RabbitHost + ":" + conf.RabbitPort + "/"
+	for {
+		conn, err := amqp.Dial(strDial)
+		if err == nil {
+			return conn
+		} else {
+			slog.Errorf("INFO:Failed to connect to RabbitMQ with %s", err.Error())
+			time.Sleep(1 * time.Second)
+		}
+	}
+}
+func (test *notifyTest) startConsuming(interface{}) {
+	test.messages = make([][]byte, 0)
+	test.messagesMutex = new(sync.RWMutex)
+	test.stopSignal = make(chan struct{})
+
+	var err error
+	test.conn = createRabbitConn()
+	panicOnErr(err)
+
+	test.ch, err = test.conn.Channel()
+	panicOnErr(err)
+
+	// Consume
+	_, err = test.ch.QueueDeclare(configs.BannerTestEx, true, false, true, false, nil)
+	panicOnErr(err)
+
+	err = test.ch.QueueBind(configs.BannerTestEx, "", configs.BannerStatEx, false, nil)
+	panicOnErr(err)
+
+	events, err := test.ch.Consume(configs.BannerTestEx, "", true, true, false, false, nil)
+	panicOnErr(err)
+
+	go func(stop <-chan struct{}) {
+		for {
+			select {
+			case <-stop:
+				return
+			case event := <-events:
+				test.messagesMutex.Lock()
+				test.messages = append(test.messages, event.Body)
+				test.messagesMutex.Unlock()
+			}
+		}
+	}(test.stopSignal)
+}
+
+func (test *notifyTest) stopConsuming(interface{}, error) {
+	test.stopSignal <- struct{}{}
+
+	panicOnErr(test.ch.Close())
+	panicOnErr(test.conn.Close())
+	test.messages = nil
+}
+func panicOnErr(err error) {
+	if err != nil {
+		slog.DPanic(err)
+	}
 }

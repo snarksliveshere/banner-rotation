@@ -16,4 +16,5 @@ const (
 	BannerStatQueue            = "banner_statistics"
 	BannerStatClick            = "click"
 	BannerStatShow             = "show"
+	BannerStatEx               = "stat_banner"
 )

@@ -8,6 +8,7 @@ require (
 	github.com/golang/protobuf v1.3.3
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/snarksliveshere/otus_golang/hw_17_monitoring/server v0.0.0-20200105124427-505961976de9 // indirect
+	github.com/streadway/amqp v0.0.0-20200108173154-1c71cc93ed71
 	go.uber.org/zap v1.13.0
 	google.golang.org/grpc v1.27.1
 )

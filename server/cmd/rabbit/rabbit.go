@@ -13,12 +13,11 @@ func RabbitCMD(conf configs.AppConfig, slog *zap.SugaredLogger) {
 	defer func() { _ = conn.Close() }()
 	ch := createChannel(conn)
 	defer func() { _ = ch.Close() }()
-	rk := configs.BannerStatQueue
-	rabbitServer(ch, rk)
+	rabbitServer(ch)
 }
 
-func RabbitCreateserver(channel *amqp.Channel) {
-	rabbitServer(channel, configs.BannerStatQueue)
+func RabbitCreateServer(channel *amqp.Channel) {
+	rabbitServer(channel)
 }
 
 func RabbitCreateConnection(conf configs.AppConfig, slog *zap.SugaredLogger) *amqp.Connection {
@@ -42,9 +41,20 @@ func createRabbitConn(conf configs.AppConfig, slog *zap.SugaredLogger) *amqp.Con
 	}
 }
 
-func rabbitServer(ch *amqp.Channel, name string) {
-	_, err := ch.QueueDeclare(
-		name,
+func rabbitServer(ch *amqp.Channel) {
+	err := ch.ExchangeDeclare(
+		configs.BannerStatEx, // name
+		"fanout",             // type
+		true,                 // durable
+		false,                // auto-deleted
+		false,                // internal
+		false,                // no-wait
+		nil,                  // arguments
+	)
+	failOnError(err, "Failed to declare an exchange")
+
+	_, err = ch.QueueDeclare(
+		configs.BannerStatQueue,
 		true,
 		false,
 		false,
@@ -52,6 +62,9 @@ func rabbitServer(ch *amqp.Channel, name string) {
 		nil,
 	)
 	failOnError(err, "Failed to declare a queue")
+	err = ch.QueueBind(configs.BannerStatQueue, "", configs.BannerStatEx, false, nil)
+
+	failOnError(err, "Failed to bind a queue")
 }
 
 func createChannel(conn *amqp.Connection) *amqp.Channel {

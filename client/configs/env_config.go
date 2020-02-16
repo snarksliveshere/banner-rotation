@@ -14,8 +14,16 @@ type Addr struct {
 	ListenIP string `envconfig:"LISTEN_IP"`
 }
 
+type Rabbit struct {
+	RabbitHost     string `envconfig:"CLIENT_RABBIT_HOST" required:"true"`
+	RabbitPort     string `envconfig:"CLIENT_RABBIT_PORT" required:"true"`
+	RabbitUser     string `envconfig:"CLIENT_RABBIT_USER" required:"true"`
+	RabbitPassword string `envconfig:"CLIENT_RABBIT_PASSWORD" required:"true"`
+}
+
 type AppConfig struct {
 	DbConfig
 	Addr
+	Rabbit
 	LogLevel string `envconfig:"LOG_LEVEL" required:"true"`
 }
