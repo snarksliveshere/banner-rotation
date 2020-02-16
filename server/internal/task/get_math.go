@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func getBanner(banners *Banners) (Banner, error) {
+func GetBanner(banners *Banners) (Banner, error) {
 	if len(banners.Banners) == 0 {
 		return Banner{}, errors.New("no banners")
 	}

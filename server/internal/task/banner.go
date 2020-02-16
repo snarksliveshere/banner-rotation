@@ -53,7 +53,7 @@ func ReturnBanner(db *pg.DB, slog *zap.SugaredLogger, channel *amqp.Channel, aud
 	if err != nil {
 		return "", err
 	}
-	banner, err := getBanner(&banners)
+	banner, err := GetBanner(&banners)
 	if err != nil {
 		return "", err
 	}
