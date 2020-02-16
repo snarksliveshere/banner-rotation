@@ -16,9 +16,9 @@ func (test *notifyTest) notificationSendAddClickBannerMessageMustContainTypeAndB
 
 	err := json.Unmarshal(test.messages[len(test.messages)-1], &stat)
 	panicOnErr(err)
-	if stat.Audience != audience ||
-		stat.Type != eventType ||
-		stat.Slot != slot ||
+	if stat.Audience != audience &&
+		stat.Type != eventType &&
+		stat.Slot != slot &&
 		stat.Banner != banner {
 		return fmt.Errorf("in method notificationSendAddClickBannerMessageMustContainTypeAndBannerAndSlotAndAudience "+
 			"data not equal in expected/given format=event:%v/%v,audience:%v/%v,slot:%v/%v,banner:%v/%v\n",

@@ -27,3 +27,22 @@ func (test *notifyTest) notificationAfterSendGetBannerMessageMustContainTypeAndA
 	}
 	return nil
 }
+func (test *notifyTest) errorNotificationAfterSendGetBannerMessageMustContainTypeAndAudienceAndSlot(eventType, audience, slot string) error {
+	time.Sleep(3 * time.Second)
+
+	test.messagesMutex.RLock()
+	defer test.messagesMutex.RUnlock()
+
+	stat := BannerStatistics{}
+
+	err := json.Unmarshal(test.messages[len(test.messages)-1], &stat)
+	panicOnErr(err)
+
+	if stat.Audience != audience ||
+		stat.Type != eventType ||
+		stat.Slot != slot {
+		test.errorRabbit = "wrong type"
+		return nil
+	}
+	return fmt.Errorf("there is no error in error method:%s\n", "errorNotificationAfterSendGetBannerMessageMustContainTypeAndAudienceAndSlot")
+}
