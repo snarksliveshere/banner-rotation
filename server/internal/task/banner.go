@@ -30,12 +30,6 @@ type Banners struct {
 	Count   int
 }
 
-type Percentage struct {
-	id    int
-	start int
-	end   int
-}
-
 type BannerStatistics struct {
 	Type     string `json:"type"`
 	Slot     string `json:"slot"`
@@ -143,57 +137,17 @@ func bannerStatToRabbit(ch *amqp.Channel, rk string, stat []byte) error {
 	return nil
 }
 
-func insertBannerStatToDB(db *pg.DB, slog *zap.SugaredLogger, banner, audience, slot string) {
-
+func getBanners(loadedRows []*models.Statistics) (Banners, error) {
+	var bsInit []Banner
+	var count int
+	for _, v := range loadedRows {
+		count = count + int(v.Shows)
+		b := Banner{
+			Id:     v.BannerId,
+			Shows:  int(v.Shows),
+			Clicks: int(v.Clicks),
+		}
+		bsInit = append(bsInit, b)
+	}
+	return Banners{Count: count, Banners: bsInit}, nil
 }
-
-//func Run(db *pg.DB) {
-//	banners, _ := getBannerStat(db, "", "")
-//	for i := 0; i < 100000; i++ {
-//		bId, err := getBanner(&banners)
-//		if err != nil {
-//			log.Fatal(err)
-//		}
-//		var rew bool
-//		if randomClick() {
-//			rew = true
-//		}
-//		incBannerStatistics(&banners, bId.Id, rew)
-//	}
-//	var statRows []*models.Statistics
-//	for _, v := range banners.Banners {
-//		row := models.Statistics{
-//			AudienceId: "2",
-//			BannerId:   v.Id,
-//			SlotId:     "2",
-//			Clicks:     uint64(v.Clicks),
-//			Shows:      uint64(v.Shows),
-//		}
-//		statRows = append(statRows, &row)
-//	}
-//	insertIntoStat(db, statRows)
-//	fmt.Println("finish")
-//}
-
-//
-//func getTestRes() []float64 {
-//	var sl []float64
-//	for _, v := range bnrs.Banners {
-//		var rs float64
-//		if v.Trials == 0 {
-//			rs = 0.5
-//		} else {
-//			//profit :=
-//			//rs = profit
-//			rs = (float64(v.Reward) / float64(v.Trials)) + math.Sqrt(math.Log(float64(bnrs.Count))/float64(v.Trials))
-//		}
-//		sl = append(sl, rs)
-//	}
-//	//fmt.Println(sl)
-//	incBannersCount()
-//	return sl
-//}
-//
-//func getBanners() Banners {
-//	return bnrs
-//}
