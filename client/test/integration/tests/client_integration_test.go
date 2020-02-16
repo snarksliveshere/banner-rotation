@@ -124,7 +124,7 @@ func FeatureContext(s *godog.Suite) {
 	s.Step(`^Error must not be empty$`, test.errorMustNotBeEmpty)
 
 	// check notification after GetBanner
-	s.Step(`^Last Notification must contain type "([^"]*)" and audience "([^"]*)" and slot "([^"]*)"$`, test.lastNotificationMustContainTypeAndAudienceAndSlot)
+	s.Step(`^Notification after SendGetBannerMessage must contain type "([^"]*)" and audience "([^"]*)" and slot "([^"]*)"$`, test.notificationAfterSendGetBannerMessageMustContainTypeAndAudienceAndSlot)
 
 	//AddClick
 	s.Step(`^I send request to GRPC SendAddClickBannerMessage with banner "([^"]*)" and slot "([^"]*)" and audience "([^"]*)"$`, test.iSendRequestToGRPCSendAddClickBannerMessageWithBannerAndSlotAndAudience)
@@ -132,6 +132,9 @@ func FeatureContext(s *godog.Suite) {
 	//error
 	s.Step(`^I send error request to GRPC SendAddClickBannerMessage with banner "([^"]*)" and slot "([^"]*)" and audience "([^"]*)"$`, test.iSendErrorRequestToGRPCSendAddClickBannerMessageWithBannerAndSlotAndAudience)
 	s.Step(`^Error must not be empty$`, test.errorMustNotBeEmpty)
+
+	//check notification after addClick
+	s.Step(`^Notification SendAddClickBannerMessage must contain type "([^"]*)" and banner "([^"]*)" and slot "([^"]*)" and audience "([^"]*)"$`, test.notificationSendAddClickBannerMessageMustContainTypeAndBannerAndSlotAndAudience)
 
 	//AddBanner2Slot
 	s.Step(`^I send request to GRPC sendAddBannerToSlotMessage with banner "([^"]*)" and slot "([^"]*)"$`, test.iSendRequestToGRPCSendAddBannerToSlotMessageWithBannerAndSlot)

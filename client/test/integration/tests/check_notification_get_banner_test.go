@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func (test *notifyTest) lastNotificationMustContainTypeAndAudienceAndSlot(eventType, audience, slot string) error {
+func (test *notifyTest) notificationAfterSendGetBannerMessageMustContainTypeAndAudienceAndSlot(eventType, audience, slot string) error {
 	time.Sleep(3 * time.Second)
 
 	test.messagesMutex.RLock()
@@ -20,7 +20,7 @@ func (test *notifyTest) lastNotificationMustContainTypeAndAudienceAndSlot(eventT
 	if stat.Audience != audience ||
 		stat.Type != eventType ||
 		stat.Slot != slot {
-		return fmt.Errorf("in method lastNotificationMustContainTypeAndAudienceAndSlot "+
+		return fmt.Errorf("in method notificationAfterSendGetBannerMessageMustContainTypeAndAudienceAndSlot "+
 			"data not equal in expected/given format=event:%v/%v,audience:%v/%v,slot:%v/%v\n",
 			eventType, stat.Type, audience, stat.Audience, slot, stat.Slot,
 		)
