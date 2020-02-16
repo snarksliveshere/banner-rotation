@@ -16,6 +16,7 @@ import (
 const (
 	dummyAudience = "male_adult"
 	dummySlot     = "top_slot_id"
+	dummyBanner   = "some_male2_adult_app_id"
 )
 
 var (
@@ -37,8 +38,41 @@ func failOnError(err error, msg string) {
 }
 
 func TestAddClick(t *testing.T) {
-	t.Errorf("TestGetBanner(), equal shows on distance:%d\n", 1)
+	var row []*models.Statistics
+	err := db.Model(&row).Column("clicks").
+		Where("banner_id = ?", dummyBanner).
+		Where("audience_id = ?", dummyAudience).
+		Where("slot_id = ?", dummySlot).
+		Limit(1).
+		Select()
+	if err != nil {
+		t.Errorf("TestAddClick(), db select error:%v\n", err)
+	}
 
+	err = AddClick(db, dummyBanner, dummySlot, dummyAudience)
+	if err != nil {
+		t.Errorf("TestAddClick(), db AddClick error:%v\n", err)
+	}
+	var rowAfter []*models.Statistics
+	err = db.Model(&rowAfter).Column("clicks").
+		Where("banner_id = ?", dummyBanner).
+		Where("audience_id = ?", dummyAudience).
+		Where("slot_id = ?", dummySlot).
+		Select()
+	if err != nil {
+		t.Errorf("TestAddClick(), db after select error:%v\n", err)
+	}
+	if len(row) == 0 || len(rowAfter) == 0 {
+		t.Errorf("TestAddClick(), unappropriate length=row:%d,rowAfter=%d\n", len(row), len(rowAfter))
+	}
+
+	if row[0].Clicks == rowAfter[0].Clicks {
+		t.Errorf("TestAddClick(), equal clicks:%d\n", row[0].Clicks)
+	}
+
+	if (row[0].Clicks + 1) != rowAfter[0].Clicks {
+		t.Errorf("TestAddClick(), wrong num of clicks=init:%v,after:%v\n", row[0].Clicks, rowAfter[0].Clicks)
+	}
 }
 
 func AddClick(db *pg.DB, banner, slot, audience string) error {
