@@ -43,7 +43,7 @@ func ReturnBanner(db *pg.DB, slog *zap.SugaredLogger, channel *amqp.Channel, aud
 	if err != nil {
 		return "", err
 	}
-	banners, err := getBanners(bannersRows)
+	banners, err := GetBanners(bannersRows)
 	if err != nil {
 		return "", err
 	}
@@ -137,7 +137,7 @@ func bannerStatToRabbit(ch *amqp.Channel, rk string, stat []byte) error {
 	return nil
 }
 
-func getBanners(loadedRows []*models.Statistics) (Banners, error) {
+func GetBanners(loadedRows []*models.Statistics) (Banners, error) {
 	var bsInit []Banner
 	var count int
 	for _, v := range loadedRows {
