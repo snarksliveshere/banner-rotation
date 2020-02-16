@@ -152,8 +152,13 @@ func FeatureContext(s *godog.Suite) {
 	s.Step(`^Error must not be empty$`, test.errorMustNotBeEmpty)
 
 	//check notification after addClick
+	s.Step(`^I send request to GRPC SendAddClickBannerMessage with banner "([^"]*)" and slot "([^"]*)" and audience "([^"]*)"$`, test.iSendRequestToGRPCSendAddClickBannerMessageWithBannerAndSlotAndAudience)
+	s.Step(`^Status should be equal to success "([^"]*)"$`, test.statusShouldBeEqualToSuccess)
 	s.Step(`^Notification SendAddClickBannerMessage must contain type "([^"]*)" and banner "([^"]*)" and slot "([^"]*)" and audience "([^"]*)"$`, test.notificationSendAddClickBannerMessageMustContainTypeAndBannerAndSlotAndAudience)
-	s.Step(`^Error Notification after SendGetBannerMessage must contain type "([^"]*)" and audience "([^"]*)" and slot "([^"]*)"$`, test.errorNotificationAfterSendGetBannerMessageMustContainTypeAndAudienceAndSlot)
+	//error
+	s.Step(`^I send request to GRPC SendAddClickBannerMessage with banner "([^"]*)" and slot "([^"]*)" and audience "([^"]*)"$`, test.iSendRequestToGRPCSendAddClickBannerMessageWithBannerAndSlotAndAudience)
+	s.Step(`^Error Notification SendAddClickBannerMessage must contain type "([^"]*)" and banner "([^"]*)" and slot "([^"]*)" and audience "([^"]*)"$`, test.errorNotificationSendAddClickBannerMessageMustContainTypeAndBannerAndSlotAndAudience)
+	s.Step(`^Rabbit Error must not be empty$`, test.rabbitErrorMustNotBeEmpty)
 
 	//AddBanner2Slot
 	s.Step(`^I send request to GRPC sendAddBannerToSlotMessage with banner "([^"]*)" and slot "([^"]*)"$`, test.iSendRequestToGRPCSendAddBannerToSlotMessageWithBannerAndSlot)
