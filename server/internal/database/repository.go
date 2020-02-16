@@ -4,10 +4,9 @@ import (
 	"errors"
 	"github.com/go-pg/pg"
 	"github.com/snarksliveshere/banner-rotation/server/internal/database/models"
-	"go.uber.org/zap"
 )
 
-func InsertRowIntoStat(db *pg.DB, log *zap.SugaredLogger, loadedRow *models.Statistics) error {
+func InsertRowIntoStat(db *pg.DB, loadedRow *models.Statistics) error {
 	_, err := db.Model(loadedRow).
 		OnConflict("(audience_id, banner_id, slot_id) DO UPDATE").
 		Set("clicks = EXCLUDED.clicks").

@@ -58,7 +58,7 @@ func ReturnBanner(db *pg.DB, slog *zap.SugaredLogger, channel *amqp.Channel, aud
 		Clicks:     uint64(banner.Clicks),
 		Shows:      uint64(banner.Shows) + 1,
 	}
-	err = database.InsertRowIntoStat(db, slog, row)
+	err = database.InsertRowIntoStat(db, row)
 	if err != nil {
 		return "", err
 	}
